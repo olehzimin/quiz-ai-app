@@ -9,20 +9,38 @@ import SwiftUI
 
 struct HomeView: View {
     @State private var quizes: [Quiz] = []
+    @State private var showStartSheet: Bool = false
     
     var body: some View {
-        ScrollView {
-            VStack {
-                ForEach(quizes) { quiz in
-                    QuizRowView(quiz: quiz)
+        ZStack(alignment: .bottomTrailing) {
+            ScrollView {
+                VStack {
+                    ForEach(quizes) { quiz in
+                        QuizRowView(quiz: quiz)
+                            .onTapGesture {
+                                showStartSheet = true
+                            }
+                            .sheet(isPresented: $showStartSheet) {
+                                QuizStartView(quiz: quiz)
+                                    .presentationDetents([.large])
+                                    .presentationDragIndicator(.visible)
+                            }
+                    }
                 }
+                .padding()
             }
+            
+            .onAppear {
+                loadQuizes()
+            }
+            
+            AddButtonView {
+                loadQuizes()
+            }
+            .frame(maxWidth: .infinity, alignment: .trailing)
             .padding()
         }
         .navigationTitle("Challenge yourself")
-        .onAppear {
-            loadQuizes()
-        }
     }
 }
 

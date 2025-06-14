@@ -7,11 +7,19 @@
 
 import Foundation
 
+struct QuizSet: Identifiable, Codable {
+    let id: UUID = UUID()
+    let name: String
+    let quizes: [Quiz]
+}
+
 struct Quiz: Identifiable, Codable {
     let id: UUID = UUID()
     let name: String
-    let category: String
+    let set: String?
+    let tags: [String]
     let icon: String
+    let color: String
     let difficulty: String
     let questions: [Question]
 }
@@ -27,9 +35,7 @@ struct Question: Identifiable, Codable {
 }
 
 enum QuestionType: String, Codable {
-    case flashcard
-    case trueFalse
-    case multipleChoice
+    case flashcard, multiChoice, trueFalse
 }
 
 extension Quiz {
@@ -37,14 +43,33 @@ extension Quiz {
         questions.count
     }
     var completedQuestionsCount: Int {
-        var count = 0
-        questions.forEach {
-            if $0.completed == true {
-                count += 1
+        questions.filter { $0.completed == true }.count
+    }
+    var completedPercent: Int {
+        completedQuestionsCount * 100 / questionsCount
+    }
+    
+    // MARK: Optimization
+    // Computed every time. Maybe better to make a lazy stored property?
+    var questionsTypeCount: [QuestionType: Int] {
+        var typeCount: [QuestionType: Int] = [
+            .flashcard: 0,
+            .multiChoice: 0,
+            .trueFalse: 0
+        ]
+        
+        questions.forEach { question in
+            switch question.type {
+            case .flashcard:
+                typeCount[.flashcard]! += 1
+            case .multiChoice:
+                typeCount[.multiChoice]! += 1
+            case .trueFalse:
+                typeCount[.trueFalse]! += 1
             }
         }
         
-        return count
+        return typeCount
     }
 }
 

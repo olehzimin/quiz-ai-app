@@ -1,7 +1,13 @@
 {
     "name": "General Knowledge",
-    "category": "General",
+    "set": "General",
+    "tags": [
+        "General",
+        "Quiz",
+        "Sample"
+    ],
     "icon": "sun.max",
+    "color": "green",
     "difficulty": "Medium",
     "questions": [
         {
@@ -14,7 +20,7 @@
         },
         {
             "type": "trueFalse",
-            "completed": false,
+            "completed": true,
             "question": "The Great Wall of China is visible from the Moon.",
             "options": [
                 "True",
@@ -24,8 +30,8 @@
             "explanation": "This is a myth; it is not visible from the Moon with the naked eye."
         },
         {
-            "type": "multipleChoice",
-            "completed": false,
+            "type": "multiChoice",
+            "completed": true,
             "question": "What is the capital of France?",
             "options": [
                 "Berlin",
@@ -46,7 +52,7 @@
         },
         {
             "type": "trueFalse",
-            "completed": false,
+            "completed": true,
             "question": "Light travels faster than sound.",
             "options": [
                 "True",
@@ -56,7 +62,7 @@
             "explanation": "Light travels at 299,792 km/s, much faster than sound (343 m/s)."
         },
         {
-            "type": "multipleChoice",
+            "type": "multiChoice",
             "completed": false,
             "question": "Which planet is known as the Red Planet?",
             "options": [
@@ -69,7 +75,7 @@
             "explanation": "Mars appears red due to iron oxide on its surface."
         },
         {
-            "type": "multipleChoice",
+            "type": "multiChoice",
             "completed": false,
             "question": "How many continents are there on Earth?",
             "options": [
@@ -101,7 +107,7 @@
             "explanation": "The Pacific Ocean covers more area than all the land masses combined."
         },
         {
-            "type": "multipleChoice",
+            "type": "multiChoice",
             "completed": false,
             "question": "Who wrote the play 'Romeo and Juliet'?",
             "options": [
