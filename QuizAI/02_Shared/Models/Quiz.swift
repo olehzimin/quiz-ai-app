@@ -2,80 +2,37 @@
 //  Quiz.swift
 //  QuizAI
 //
-//  Created by Oleh Zimin on 12.06.2025.
+//  Created by Oleh Zimin on 15.06.2025.
 //
 
 import Foundation
+import SwiftData
 
-struct QuizSet: Identifiable, Codable {
-    let id: UUID = UUID()
-    let name: String
-    let quizes: [Quiz]
-}
-
-struct Quiz: Identifiable, Codable {
-    let id: UUID = UUID()
-    let name: String
-    let set: String?
-    let tags: [String]
-    let icon: String
-    let color: String
-    let difficulty: String
-    let questions: [Question]
-}
-
-struct Question: Identifiable, Codable {
-    let id: UUID = UUID()
-    let type: QuestionType
-    var completed: Bool?
-    let question: String
-    let options: [String]
-    let answerIndex: Int
-    let explanation: String?
-}
-
-enum QuestionType: String, Codable {
-    case flashcard, multiChoice, trueFalse
-}
-
-extension Quiz {
-    var questionsCount: Int {
-        questions.count
-    }
-    var completedQuestionsCount: Int {
-        questions.filter { $0.completed == true }.count
-    }
-    var completedPercent: Int {
-        completedQuestionsCount * 100 / questionsCount
-    }
+@Model
+class Quiz {
+    var name: String
+    var set: String?
+    var tags: [String]
+    var icon: String
+    var color: String
+    var difficulty: String
+    var questions: [Question]
     
-    // MARK: Optimization
-    // Computed every time. Maybe better to make a lazy stored property?
-    var questionsTypeCount: [QuestionType: Int] {
-        var typeCount: [QuestionType: Int] = [
-            .flashcard: 0,
-            .multiChoice: 0,
-            .trueFalse: 0
-        ]
-        
-        questions.forEach { question in
-            switch question.type {
-            case .flashcard:
-                typeCount[.flashcard]! += 1
-            case .multiChoice:
-                typeCount[.multiChoice]! += 1
-            case .trueFalse:
-                typeCount[.trueFalse]! += 1
-            }
-        }
-        
-        return typeCount
+    init(name: String, set: String? = nil, tags: [String], icon: String, color: String, difficulty: String, questions: [Question]) {
+        self.name = name
+        self.set = set
+        self.tags = tags
+        self.icon = icon
+        self.color = color
+        self.difficulty = difficulty
+        self.questions = questions
     }
 }
 
 extension Quiz {
-    static var mock: Quiz? {
-        guard let url = Bundle.main.url(forResource: "QuizSample.json", withExtension: nil) else {
+    static var mockQuestions: [Question]? {
+        var questions: [Question] = []
+        guard let url = Bundle.main.url(forResource: "QuestionsSample.json", withExtension: nil) else {
             print("URL error")
             return nil
         }
@@ -85,20 +42,27 @@ extension Quiz {
             return nil
         }
         
-        if let quiz = try? JSONDecoder().decode(Quiz.self, from: data) {
-            return quiz
+        if let decodedQuestions = try? JSONDecoder().decode([Question].self, from: data) {
+            questions = decodedQuestions
+        }
+        
+        return questions
+    }
+    
+    static var mock: Quiz? {
+        if let questions = Self.mockQuestions {
+            let newQuiz = Quiz(
+                name: "Sample Quiz",
+                set: nil,
+                tags: ["General", "Quiz", "Sample"],
+                icon: "sun.max",
+                color: "green",
+                difficulty: "Medium",
+                questions: questions)
+            
+            return newQuiz
         }
         
         return nil
     }
-}
-
-extension Quiz: Hashable {
-    static func == (lhs: Quiz, rhs: Quiz) -> Bool {
-        lhs.id == rhs.id
-    }
-    
-    func hash(into hasher: inout Hasher) {
-            hasher.combine(id)
-        }
 }

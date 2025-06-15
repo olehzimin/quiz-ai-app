@@ -19,4 +19,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .modelContainer(for: Quiz.self, inMemory: true)
 }

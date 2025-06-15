@@ -1,0 +1,120 @@
+[
+    {
+        "type": "flashcard",
+        "completed": false,
+        "question": "What is the powerhouse of the cell?",
+        "options": [
+            "Repeat",
+            "Know"
+        ],
+        "answerIndex": 1,
+        "explanation": "Mitochondria produce the energy needed by the cell."
+    },
+    {
+        "type": "trueFalse",
+        "completed": true,
+        "question": "The Great Wall of China is visible from the Moon.",
+        "options": [
+            "False",
+            "True"
+        ],
+        "answerIndex": 1,
+        "explanation": "This is a myth; it is not visible from the Moon with the naked eye."
+    },
+    {
+        "type": "multiChoice",
+        "completed": true,
+        "question": "What is the capital of France?",
+        "options": [
+            "Berlin",
+            "Madrid",
+            "Paris",
+            "Lisbon"
+        ],
+        "answerIndex": 2,
+        "explanation": "Paris is the capital of France."
+    },
+    {
+        "type": "flashcard",
+        "completed": false,
+        "question": "What is the chemical symbol for gold?",
+        "options": [
+            "Repeat",
+            "Know"
+        ],
+        "answerIndex": 1,
+        "explanation": "The symbol for gold is Au."
+    },
+    {
+        "type": "trueFalse",
+        "completed": true,
+        "question": "Light travels faster than sound.",
+        "options": [
+            "False",
+            "True"
+        ],
+        "answerIndex": 0,
+        "explanation": "Light travels at 299,792 km/s, much faster than sound (343 m/s)."
+    },
+    {
+        "type": "multiChoice",
+        "completed": false,
+        "question": "Which planet is known as the Red Planet?",
+        "options": [
+            "Earth",
+            "Mars",
+            "Jupiter",
+            "Venus"
+        ],
+        "answerIndex": 1,
+        "explanation": "Mars appears red due to iron oxide on its surface."
+    },
+    {
+        "type": "multiChoice",
+        "completed": false,
+        "question": "How many continents are there on Earth?",
+        "options": [
+            "5",
+            "6",
+            "7",
+            "8"
+        ],
+        "answerIndex": 2,
+        "explanation": "There are 7 continents: Asia, Africa, North America, South America, Antarctica, Europe, and Australia."
+    },
+    {
+        "type": "flashcard",
+        "completed": false,
+        "question": "What gas do plants absorb from the atmosphere?",
+        "options": [
+            "Repeat",
+            "Know"
+        ],
+        "answerIndex": 1,
+        "explanation": "Plants absorb carbon dioxide for photosynthesis."
+    },
+    {
+        "type": "trueFalse",
+        "completed": false,
+        "question": "The Pacific Ocean is the largest ocean on Earth.",
+        "options": [
+            "False",
+            "True"
+        ],
+        "answerIndex": 0,
+        "explanation": "The Pacific Ocean covers more area than all the land masses combined."
+    },
+    {
+        "type": "multiChoice",
+        "completed": false,
+        "question": "Who wrote the play 'Romeo and Juliet'?",
+        "options": [
+            "Charles Dickens",
+            "William Shakespeare",
+            "Jane Austen",
+            "Leo Tolstoy"
+        ],
+        "answerIndex": 1,
+        "explanation": "William Shakespeare wrote the tragic play 'Romeo and Juliet'."
+    }
+]

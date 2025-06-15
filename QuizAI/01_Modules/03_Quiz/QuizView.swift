@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct QuizView: View {
+    @Environment(\.modelContext) var modelContext
+    
     let quiz: Quiz
     @Binding var path: NavigationPath
     @State private var currentIndex: Int = 0
@@ -37,6 +39,11 @@ struct QuizView: View {
                         isQuestionAnswered: isQuestionAnswered
                     ) {
                         isQuestionAnswered = true
+//                        if index == currentQuestion.answerIndex {
+//                            currentQuestion.completed = true
+//                        } else {
+//                            currentQuestion.completed = false
+//                        }
                     }
                     .disabled(isQuestionAnswered)
                 }

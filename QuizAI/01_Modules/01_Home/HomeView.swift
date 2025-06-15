@@ -6,10 +6,13 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct HomeView: View {
+    @Environment(\.modelContext) var modelContext
+    @Query(sort: \Quiz.name) var quizes: [Quiz]
+    
     @Binding var path: NavigationPath
-    @State private var quizes: [Quiz] = []
     @State private var showStartSheet: Bool = false
     
     var body: some View {
@@ -33,13 +36,18 @@ struct HomeView: View {
             }
             
             AddButtonView {
-                loadQuizes()
+                path.append("add")
             }
             .frame(maxWidth: .infinity, alignment: .trailing)
             .padding()
         }
         .navigationDestination(for: Quiz.self) { quiz in
-                QuizView(quiz: quiz, path: $path)
+            QuizView(quiz: quiz, path: $path)
+        }
+        .navigationDestination(for: String.self) { value in
+            if value == "add" {
+                AddEditView(editMode: false)
+            }
         }
         .navigationTitle("Challenge yourself")
     }
@@ -49,12 +57,14 @@ struct HomeView: View {
     NavigationStack {
         HomeView(path: .constant(NavigationPath()))
     }
+    .modelContainer(for: Quiz.self, inMemory: true)
 }
 
 extension HomeView {
     func loadQuizes() {
         if let quiz = Quiz.mock {
-            quizes.append(quiz)
+            print("inserted")
+            modelContext.insert(quiz)
         }
     }
 }

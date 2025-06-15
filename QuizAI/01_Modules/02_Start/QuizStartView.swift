@@ -17,6 +17,7 @@ struct QuizStartView: View {
     @State private var timerMinutes: Int = 0
     @State private var timerSeconds: Int = 20
     
+    @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) var dismiss
     
     var chosenTasks: Int {
@@ -31,7 +32,7 @@ struct QuizStartView: View {
     
     var body: some View {
             VStack(spacing: 0) {
-                HeaderView(quiz: quiz)
+                headerView
                 
                 Form {
                     Section {
@@ -100,7 +101,7 @@ struct QuizStartView: View {
             }
             .animation(.default, value: timerOption)
             .safeAreaInset(edge: .top) {
-                NavigationBarView(dismiss: dismiss)
+                navigationBarView
             }
     }
 }
@@ -111,10 +112,8 @@ struct QuizStartView: View {
     }
 }
 
-fileprivate struct HeaderView: View {
-    let quiz: Quiz
-    
-    var body: some View {
+extension QuizStartView {
+    private var headerView: some View {
         VStack(spacing: 8) {
             HStack(alignment: .top) {
                 Text(quiz.name)
@@ -155,13 +154,10 @@ fileprivate struct HeaderView: View {
                 .brightness(0.6)
                 .ignoresSafeArea()
         )
+        
     }
-}
-
-fileprivate struct NavigationBarView: View {
-    var dismiss: DismissAction
     
-    var body: some View {
+    private var navigationBarView: some View {
         HStack(spacing: 32) {
             Button {
                 dismiss()
@@ -172,7 +168,8 @@ fileprivate struct NavigationBarView: View {
             Spacer()
             
             Button {
-                
+                dismiss()
+                modelContext.delete(quiz)
             } label: {
                 Image(systemName: "trash")
             }
@@ -188,5 +185,6 @@ fileprivate struct NavigationBarView: View {
         .padding(.horizontal)
         .padding(.top, 32)
         .foregroundStyle(.black)
+        
     }
 }
