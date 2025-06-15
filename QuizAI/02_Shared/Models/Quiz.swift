@@ -29,8 +29,8 @@ struct Question: Identifiable, Codable {
     let type: QuestionType
     var completed: Bool?
     let question: String
-    let options: [String]?
-    let answerIndex: Int?
+    let options: [String]
+    let answerIndex: Int
     let explanation: String?
 }
 
@@ -91,4 +91,14 @@ extension Quiz {
         
         return nil
     }
+}
+
+extension Quiz: Hashable {
+    static func == (lhs: Quiz, rhs: Quiz) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+            hasher.combine(id)
+        }
 }

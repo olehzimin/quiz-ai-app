@@ -8,9 +8,11 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var path: NavigationPath = NavigationPath()
+    
     var body: some View {
-        NavigationStack {
-            HomeView()
+        NavigationStack(path: $path) {
+            HomeView(path: $path)
         }
     }
 }

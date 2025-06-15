@@ -9,12 +9,15 @@ import SwiftUI
 
 struct QuizStartView: View {
     var quiz: Quiz
+    @Binding var path: NavigationPath
     @State private var multichoiceOption: Bool = true
     @State private var flashcardOption: Bool = true
     @State private var trueFalseOption: Bool = true
     @State private var timerOption: Bool = false
     @State private var timerMinutes: Int = 0
     @State private var timerSeconds: Int = 20
+    
+    @Environment(\.dismiss) var dismiss
     
     var chosenTasks: Int {
         var total: Int = 0
@@ -27,7 +30,6 @@ struct QuizStartView: View {
     }
     
     var body: some View {
-        NavigationStack {
             VStack(spacing: 0) {
                 HeaderView(quiz: quiz)
                 
@@ -78,15 +80,18 @@ struct QuizStartView: View {
                     }
                     
                     Button {
-                        print("Custom action triggered")
+                        dismiss()
+                        path.append(quiz)
                     } label: {
                         Text("Start Quiz")
                             .bold()
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color(quiz.color))
-                            .cornerRadius(12)
+                            .background(
+                                Capsule()
+                                    .fill(Color(quiz.color))
+                            )
                     }
                     .listRowInsets(EdgeInsets())
                     .listRowBackground(Color.clear)
@@ -95,16 +100,14 @@ struct QuizStartView: View {
             }
             .animation(.default, value: timerOption)
             .safeAreaInset(edge: .top) {
-                NavigationBarView()
+                NavigationBarView(dismiss: dismiss)
             }
-            
-        }
     }
 }
 
 #Preview {
     if let quiz = Quiz.mock {
-        QuizStartView(quiz: quiz)
+        QuizStartView(quiz: quiz, path: .constant(NavigationPath()))
     }
 }
 
@@ -156,7 +159,7 @@ fileprivate struct HeaderView: View {
 }
 
 fileprivate struct NavigationBarView: View {
-    @Environment(\.dismiss) var dismiss
+    var dismiss: DismissAction
     
     var body: some View {
         HStack(spacing: 32) {

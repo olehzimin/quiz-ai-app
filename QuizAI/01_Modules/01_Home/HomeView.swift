@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct HomeView: View {
+    @Binding var path: NavigationPath
     @State private var quizes: [Quiz] = []
     @State private var showStartSheet: Bool = false
     
@@ -21,17 +22,14 @@ struct HomeView: View {
                                 showStartSheet = true
                             }
                             .sheet(isPresented: $showStartSheet) {
-                                QuizStartView(quiz: quiz)
-                                    .presentationDetents([.large])
+                                QuizStartView(quiz: quiz, path: $path)
+                                    .presentationDetents([.fraction(0.98)])
                                     .presentationDragIndicator(.visible)
                             }
+                            
                     }
                 }
                 .padding()
-            }
-            
-            .onAppear {
-                loadQuizes()
             }
             
             AddButtonView {
@@ -40,13 +38,16 @@ struct HomeView: View {
             .frame(maxWidth: .infinity, alignment: .trailing)
             .padding()
         }
+        .navigationDestination(for: Quiz.self) { quiz in
+                QuizView(quiz: quiz, path: $path)
+        }
         .navigationTitle("Challenge yourself")
     }
 }
 
 #Preview {
     NavigationStack {
-        HomeView()
+        HomeView(path: .constant(NavigationPath()))
     }
 }
 

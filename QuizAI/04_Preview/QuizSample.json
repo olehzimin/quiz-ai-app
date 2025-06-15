@@ -14,8 +14,11 @@
             "type": "flashcard",
             "completed": false,
             "question": "What is the powerhouse of the cell?",
-            "options": null,
-            "answerIndex": null,
+            "options": [
+                "Repeat",
+                "Know"
+            ],
+            "answerIndex": 1,
             "explanation": "Mitochondria produce the energy needed by the cell."
         },
         {
@@ -23,8 +26,8 @@
             "completed": true,
             "question": "The Great Wall of China is visible from the Moon.",
             "options": [
-                "True",
-                "False"
+                "False",
+                "True"
             ],
             "answerIndex": 1,
             "explanation": "This is a myth; it is not visible from the Moon with the naked eye."
@@ -46,8 +49,11 @@
             "type": "flashcard",
             "completed": false,
             "question": "What is the chemical symbol for gold?",
-            "options": null,
-            "answerIndex": null,
+            "options": [
+                "Repeat",
+                "Know"
+            ],
+            "answerIndex": 1,
             "explanation": "The symbol for gold is Au."
         },
         {
@@ -55,8 +61,8 @@
             "completed": true,
             "question": "Light travels faster than sound.",
             "options": [
-                "True",
-                "False"
+                "False",
+                "True"
             ],
             "answerIndex": 0,
             "explanation": "Light travels at 299,792 km/s, much faster than sound (343 m/s)."
@@ -91,8 +97,11 @@
             "type": "flashcard",
             "completed": false,
             "question": "What gas do plants absorb from the atmosphere?",
-            "options": null,
-            "answerIndex": null,
+            "options": [
+                "Repeat",
+                "Know"
+            ],
+            "answerIndex": 1,
             "explanation": "Plants absorb carbon dioxide for photosynthesis."
         },
         {
@@ -100,8 +109,8 @@
             "completed": false,
             "question": "The Pacific Ocean is the largest ocean on Earth.",
             "options": [
-                "True",
-                "False"
+                "False",
+                "True"
             ],
             "answerIndex": 0,
             "explanation": "The Pacific Ocean covers more area than all the land masses combined."

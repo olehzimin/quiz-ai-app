@@ -12,7 +12,7 @@ struct PressableButtonStyle: ButtonStyle {
         configuration.label
             .scaleEffect(configuration.isPressed ? 0.8 : 1.0)
             .brightness(configuration.isPressed ? 0.2 : 0.0)
-            .animation(.easeInOut(duration: 0.2), value: configuration.isPressed)
+            .animation(.bouncy(duration: 0.2), value: configuration.isPressed)
     }
 }
 
