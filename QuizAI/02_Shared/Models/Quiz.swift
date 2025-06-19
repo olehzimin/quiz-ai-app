@@ -8,6 +8,10 @@
 import Foundation
 import SwiftData
 
+enum QuizDifficulty: String, Codable {
+    case easy, medium, hard
+}
+
 @Model
 class Quiz {
     var name: String
@@ -15,10 +19,14 @@ class Quiz {
     var tags: [String]
     var icon: String
     var color: String
-    var difficulty: String
+    var difficulty: QuizDifficulty
     var questions: [Question]
+    var completedQuestionsCount: Int = 0
     
-    init(name: String, set: String? = nil, tags: [String], icon: String, color: String, difficulty: String, questions: [Question]) {
+    
+//    private var questionsTypeCount: [QuestionType: Int]? = nil
+    
+    init(name: String, set: String? = nil, tags: [String], icon: String, color: String, difficulty: QuizDifficulty, questions: [Question]) {
         self.name = name
         self.set = set
         self.tags = tags
@@ -26,6 +34,38 @@ class Quiz {
         self.color = color
         self.difficulty = difficulty
         self.questions = questions
+    }
+}
+
+extension Quiz {
+    var questionsCount: Int {
+        questions.count
+    }
+    var completedPercent: Int {
+        completedQuestionsCount * 100 / questionsCount
+    }
+    
+    // MARK: Rework
+    // Rework logic of question type count
+    var questionsTypeCount: [QuestionType: Int] {
+        var typeCount: [QuestionType: Int] = [
+            .flashcard: 0,
+            .multichoice: 0,
+            .trueFalse: 0
+        ]
+        
+        questions.forEach { question in
+            switch question.type {
+            case .flashcard:
+                typeCount[.flashcard]! += 1
+            case .multichoice:
+                typeCount[.multichoice]! += 1
+            case .trueFalse:
+                typeCount[.trueFalse]! += 1
+            }
+        }
+        
+        return typeCount
     }
 }
 
@@ -57,7 +97,7 @@ extension Quiz {
                 tags: ["General", "Quiz", "Sample"],
                 icon: "sun.max",
                 color: "green",
-                difficulty: "Medium",
+                difficulty: .medium,
                 questions: questions)
             
             return newQuiz
@@ -66,3 +106,5 @@ extension Quiz {
         return nil
     }
 }
+
+

@@ -36,7 +36,7 @@ struct QuizRowView: View {
                                 .foregroundStyle(.gray)
                         }
                         
-                        Text(quiz.difficulty)
+                        Text(quiz.difficulty.rawValue)
                             .font(.callout)
                             .foregroundStyle(.red)
                     }

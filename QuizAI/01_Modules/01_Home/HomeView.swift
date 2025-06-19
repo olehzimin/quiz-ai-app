@@ -36,7 +36,15 @@ struct HomeView: View {
             }
             
             AddButtonView {
-                path.append("add")
+                Task {
+                    do {
+                        let questions = try await OpenAIService.generateQuiz(topic: "Architecture", questionCount: 10, types: [.multichoice, .flashcard], difficulty: .hard)
+                        print(questions)
+                    } catch {
+                        print(error)
+                    }
+                }
+//                path.append("add")
             }
             .frame(maxWidth: .infinity, alignment: .trailing)
             .padding()

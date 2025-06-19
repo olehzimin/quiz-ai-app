@@ -13,15 +13,58 @@ struct AddEditView: View {
     
     let editMode: Bool
     @State private var name: String = ""
+    @State private var userInput: String = ""
     @State private var icon: String = ""
+    @State private var difficulty: String = "Medium"
+    
+    private let difficultyOptions = [
+        "Easy",
+        "Medium",
+        "Hard"
+    ]
     
     var body: some View {
-        Form {
-            TextField("Name", text: $name)
-            Text("SET - future implementation")
-            Text("TAGS - future implementation")
-            TextField("Icon", text: $icon)
-            Text("Difficulty")
+        ZStack(alignment: .bottom) {
+            Form {
+                Section {
+                    TextField("Name", text: $name)
+                    TextField("Icon", text: $icon)
+                    Text("SET - future implementation")
+                    Text("TAGS - future implementation")
+                }
+                
+                Section {
+                    TextField("Topic to generate your quiz", text: $userInput, axis: .vertical)
+                        .lineLimit(3)
+                }
+                
+                Section {
+                    Picker("Difficulty", selection: $difficulty) {
+                        ForEach(difficultyOptions, id: \.self) { option in
+                            Text(option)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
+                }
+                
+            }
+            .scrollBounceBehavior(.basedOnSize)
+            
+            Button {
+                
+            } label: {
+                ZStack {
+                    Capsule()
+                    
+                    Text("Generate")
+                        .foregroundStyle(.white)
+                }
+                .frame(height: 60)
+            }
+            .padding()
+            .buttonStyle(PressableButtonStyle())
         }
         .toolbar {
             Button("Save") {
@@ -33,7 +76,7 @@ struct AddEditView: View {
                     tags: ["General", "Quiz", "Sample"],
                     icon: icon,
                     color: "green",
-                    difficulty: "Medium",
+                    difficulty: .medium,
                     questions: questions
                 )
                 

@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct QuizView: View {
-    @Environment(\.modelContext) var modelContext
-    
     let quiz: Quiz
     @Binding var path: NavigationPath
     @State private var currentIndex: Int = 0
@@ -24,41 +22,52 @@ struct QuizView: View {
     
     var body: some View {
         VStack {
-            Text("\(currentIndex + 1) / \(quiz.questionsCount)")
-            
-            Text("timer")
-            
-            QuestionCardView(question: currentQuestion)
-                .frame(height: 360)
-            
-            LazyVGrid(columns: columns) {
-                ForEach(Array(currentQuestion.options.enumerated()), id: \.offset) { index, option in
-                    AnswerButtonView(
-                        answer: option,
-                        isCorrect: index == currentQuestion.answerIndex,
-                        isQuestionAnswered: isQuestionAnswered
-                    ) {
-                        isQuestionAnswered = true
-//                        if index == currentQuestion.answerIndex {
-//                            currentQuestion.completed = true
-//                        } else {
-//                            currentQuestion.completed = false
-//                        }
+            if currentIndex < quiz.questionsCount {
+                VStack {
+                    Text("\(currentIndex + 1) / \(quiz.questionsCount)")
+                    
+                    Text("timer")
+                    
+                    QuestionCardView(question: currentQuestion)
+                        .frame(height: 360)
+                    
+                    LazyVGrid(columns: columns) {
+                        ForEach(Array(currentQuestion.options.enumerated()), id: \.offset) { index, option in
+                            AnswerButtonView(
+                                answer: option,
+                                isCorrect: index == currentQuestion.answerIndex,
+                                isQuestionAnswered: isQuestionAnswered
+                            ) {
+                                isQuestionAnswered = true
+                                if index == currentQuestion.answerIndex {
+                                    quiz.completedQuestionsCount += 1
+                                }
+                            }
+                            .disabled(isQuestionAnswered)
+                        }
                     }
-                    .disabled(isQuestionAnswered)
+                    .padding(.vertical)
                 }
+            } else {
+                Text("Well done! \nYour score: \(quiz.completedQuestionsCount) / \(quiz.questionsCount)")
+                    .frame(maxHeight: .infinity, alignment: .center)
             }
-            .padding(.vertical)
             
             Spacer()
             
             Button {
-                if currentIndex < quiz.questionsCount - 1 {
-                    currentIndex += 1
-                    isQuestionAnswered = false
-                } else {
+                currentIndex += 1
+                
+                if currentIndex > quiz.questionsCount {
+                    print("Exit")
                     path.removeLast()
                 }
+                    
+                if currentIndex < quiz.questionsCount {
+                    isQuestionAnswered = false
+                }
+                
+                print(currentIndex)
             } label: {
                 ZStack {
                     Capsule()
@@ -200,3 +209,4 @@ fileprivate struct AnswerButtonView: View {
         }
     }
 }
+

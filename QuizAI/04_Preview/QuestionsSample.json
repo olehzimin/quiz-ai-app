@@ -1,7 +1,6 @@
 [
     {
         "type": "flashcard",
-        "completed": false,
         "question": "What is the powerhouse of the cell?",
         "options": [
             "Repeat",
@@ -12,18 +11,16 @@
     },
     {
         "type": "trueFalse",
-        "completed": true,
         "question": "The Great Wall of China is visible from the Moon.",
         "options": [
             "False",
             "True"
         ],
-        "answerIndex": 1,
+        "answerIndex": 0,
         "explanation": "This is a myth; it is not visible from the Moon with the naked eye."
     },
     {
         "type": "multiChoice",
-        "completed": true,
         "question": "What is the capital of France?",
         "options": [
             "Berlin",
@@ -36,7 +33,6 @@
     },
     {
         "type": "flashcard",
-        "completed": false,
         "question": "What is the chemical symbol for gold?",
         "options": [
             "Repeat",
@@ -47,18 +43,16 @@
     },
     {
         "type": "trueFalse",
-        "completed": true,
         "question": "Light travels faster than sound.",
         "options": [
             "False",
             "True"
         ],
-        "answerIndex": 0,
+        "answerIndex": 1,
         "explanation": "Light travels at 299,792 km/s, much faster than sound (343 m/s)."
     },
     {
         "type": "multiChoice",
-        "completed": false,
         "question": "Which planet is known as the Red Planet?",
         "options": [
             "Earth",
@@ -71,7 +65,6 @@
     },
     {
         "type": "multiChoice",
-        "completed": false,
         "question": "How many continents are there on Earth?",
         "options": [
             "5",
@@ -84,7 +77,6 @@
     },
     {
         "type": "flashcard",
-        "completed": false,
         "question": "What gas do plants absorb from the atmosphere?",
         "options": [
             "Repeat",
@@ -95,18 +87,16 @@
     },
     {
         "type": "trueFalse",
-        "completed": false,
         "question": "The Pacific Ocean is the largest ocean on Earth.",
         "options": [
             "False",
             "True"
         ],
-        "answerIndex": 0,
+        "answerIndex": 1,
         "explanation": "The Pacific Ocean covers more area than all the land masses combined."
     },
     {
         "type": "multiChoice",
-        "completed": false,
         "question": "Who wrote the play 'Romeo and Juliet'?",
         "options": [
             "Charles Dickens",

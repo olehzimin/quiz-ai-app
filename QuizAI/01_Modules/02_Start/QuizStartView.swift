@@ -23,7 +23,7 @@ struct QuizStartView: View {
     var chosenTasks: Int {
         var total: Int = 0
         
-        if multichoiceOption { total += quiz.questionsTypeCount[.multiChoice] ?? 0 }
+        if multichoiceOption { total += quiz.questionsTypeCount[.multichoice] ?? 0 }
         if flashcardOption { total += quiz.questionsTypeCount[.flashcard] ?? 0 }
         if trueFalseOption { total += quiz.questionsTypeCount[.trueFalse] ?? 0 }
         
@@ -36,7 +36,7 @@ struct QuizStartView: View {
                 
                 Form {
                     Section {
-                        if quiz.questionsTypeCount[.multiChoice] != 0 {
+                        if quiz.questionsTypeCount[.multichoice] != 0 {
                             Toggle("Multichoice", isOn: $multichoiceOption)
                         }
                         
@@ -83,6 +83,7 @@ struct QuizStartView: View {
                     Button {
                         dismiss()
                         path.append(quiz)
+                        quiz.completedQuestionsCount = 0
                     } label: {
                         Text("Start Quiz")
                             .bold()
@@ -132,7 +133,7 @@ extension QuizStartView {
                         .bold()
                 }
                 
-                Text(quiz.difficulty)
+                Text(quiz.difficulty.rawValue)
                     .foregroundStyle(.red)
                 
                 Text("\(quiz.questionsCount) tasks")

@@ -1,0 +1,25 @@
+# QuizAI
+Secrets.swift
+
+# Build artifacts
+build/
+DerivedData/
+
+# Xcode user-specific files
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved
+
+# SwiftUI Previews
+*.xcpreview/
+
+# Xcode generated interface files
+*.moved-aside
+
+# Misc
+*.ds_store
