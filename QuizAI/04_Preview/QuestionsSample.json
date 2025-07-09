@@ -20,7 +20,7 @@
         "explanation": "This is a myth; it is not visible from the Moon with the naked eye."
     },
     {
-        "type": "multiChoice",
+        "type": "multichoice",
         "question": "What is the capital of France?",
         "options": [
             "Berlin",
@@ -52,7 +52,7 @@
         "explanation": "Light travels at 299,792 km/s, much faster than sound (343 m/s)."
     },
     {
-        "type": "multiChoice",
+        "type": "multichoice",
         "question": "Which planet is known as the Red Planet?",
         "options": [
             "Earth",
@@ -64,7 +64,7 @@
         "explanation": "Mars appears red due to iron oxide on its surface."
     },
     {
-        "type": "multiChoice",
+        "type": "multichoice",
         "question": "How many continents are there on Earth?",
         "options": [
             "5",
@@ -96,7 +96,7 @@
         "explanation": "The Pacific Ocean covers more area than all the land masses combined."
     },
     {
-        "type": "multiChoice",
+        "type": "multichoice",
         "question": "Who wrote the play 'Romeo and Juliet'?",
         "options": [
             "Charles Dickens",

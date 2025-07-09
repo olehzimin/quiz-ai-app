@@ -62,14 +62,14 @@ struct QuizStartView: View {
                             HStack {
                                 Picker("Set minutes", selection: $timerMinutes) {
                                     ForEach(0..<11) { interval in
-                                        Text("\(interval) min")
+                                        Text("\(interval) min").tag(interval)
                                     }
                                 }
                                 
                                 Picker("Set seconds", selection: $timerSeconds) {
                                     ForEach(0..<60) { interval in
                                         if interval % 10 == 0 {
-                                            Text("\(interval) s")
+                                            Text("\(interval) s").tag(interval)
                                         }
                                     }
                                 }

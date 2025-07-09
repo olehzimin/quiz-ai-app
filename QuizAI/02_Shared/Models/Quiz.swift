@@ -8,7 +8,7 @@
 import Foundation
 import SwiftData
 
-enum QuizDifficulty: String, Codable {
+enum QuizDifficulty: String, Codable, CaseIterable {
     case easy, medium, hard
 }
 
@@ -96,7 +96,7 @@ extension Quiz {
                 set: nil,
                 tags: ["General", "Quiz", "Sample"],
                 icon: "sun.max",
-                color: "green",
+                color: "greenQuiz",
                 difficulty: .medium,
                 questions: questions)
             

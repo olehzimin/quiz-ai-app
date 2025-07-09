@@ -43,7 +43,7 @@ struct OpenAIService {
             """
     )
     
-    static private func userMessage(topic: String, questionCount: Int, types: [QuestionType], difficulty: QuizDifficulty) -> Message {
+    static private func userMessage(topic: String, questionsCount: Int, types: [QuestionType], difficulty: QuizDifficulty) -> Message {
         let stringTypes = types.map { $0.rawValue }.joined(separator: ", ")
         
         return Message(
@@ -51,7 +51,7 @@ struct OpenAIService {
             content:
                 """
                 Topic: \(topic).
-                Number of questions: \(questionCount).
+                Number of questions: \(questionsCount).
                 Use only the following question types: \(stringTypes).
                 Difficulty: \(difficulty.rawValue).
                 Follow the required JSON format and rules provided.
@@ -59,8 +59,8 @@ struct OpenAIService {
         )
     }
     
-    static func generateQuiz(topic: String, questionCount: Int, types: [QuestionType], difficulty: QuizDifficulty) async throws -> [Question] {
-        let userMassage = userMessage(topic: topic, questionCount: questionCount, types: types, difficulty: difficulty)
+    static func generateQuestions(topic: String, questionsCount: Int, types: [QuestionType], difficulty: QuizDifficulty) async throws -> [Question] {
+        let userMassage = userMessage(topic: topic, questionsCount: questionsCount, types: types, difficulty: difficulty)
         let openAIRequestBody = OpenAIRequestBody(model: model, messages: [systemMessage, userMassage])
         
         guard let apiURL else {
@@ -118,12 +118,12 @@ enum OpenAIResponseError: Error {
 }
 
 extension OpenAIResponseError: LocalizedError {
-    var errorDescription: String {
+    private var errorDescription: String {
         switch self {
         case .missingContent:
             "The server response is missing the expected message content."
         case .encodingFailed:
-            "Encoding of content failed"
+            "Encoding of content failed."
         }
     }
 }

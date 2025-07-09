@@ -12,39 +12,35 @@ struct HomeView: View {
     @Environment(\.modelContext) var modelContext
     @Query(sort: \Quiz.name) var quizes: [Quiz]
     
+    @State private var quizManager = QuizManager.shared
+    @State private var showMessage: Bool = false
+    
     @Binding var path: NavigationPath
-    @State private var showStartSheet: Bool = false
+    @State private var selectedQuiz: Quiz? = nil
     
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
             ScrollView {
                 VStack {
-                    ForEach(quizes) { quiz in
+                    ForEach(quizes, id: \.self) { quiz in
                         QuizRowView(quiz: quiz)
                             .onTapGesture {
-                                showStartSheet = true
+                                selectedQuiz = quiz
                             }
-                            .sheet(isPresented: $showStartSheet) {
-                                QuizStartView(quiz: quiz, path: $path)
-                                    .presentationDetents([.fraction(0.98)])
-                                    .presentationDragIndicator(.visible)
-                            }
+                            
                             
                     }
                 }
                 .padding()
             }
+            .sheet(item: $selectedQuiz) { quiz in
+                QuizStartView(quiz: quiz, path: $path)
+                    .presentationDetents([.large])
+                    .presentationDragIndicator(.visible)
+            }
             
             AddButtonView {
-                Task {
-                    do {
-                        let questions = try await OpenAIService.generateQuiz(topic: "Architecture", questionCount: 10, types: [.multichoice, .flashcard], difficulty: .hard)
-                        print(questions)
-                    } catch {
-                        print(error)
-                    }
-                }
-//                path.append("add")
+                path.append("addView")
             }
             .frame(maxWidth: .infinity, alignment: .trailing)
             .padding()
@@ -53,11 +49,29 @@ struct HomeView: View {
             QuizView(quiz: quiz, path: $path)
         }
         .navigationDestination(for: String.self) { value in
-            if value == "add" {
+            if value == "addView" {
                 AddEditView(editMode: false)
             }
         }
         .navigationTitle("Challenge yourself")
+        .toolbar {
+            if quizManager.isGenerating {
+                HStack {
+                    Text("Generating")
+                    ProgressView()
+                }
+            }
+        }
+        .onChange(of: quizManager.isGenerating) { oldValue, newValue in
+            if newValue == false {
+                do {
+                    let newQuiz = try quizManager.getLastGeneratedQuiz()
+                    modelContext.insert(newQuiz)
+                } catch {
+                    print(error)
+                }
+            }
+        }
     }
 }
 
