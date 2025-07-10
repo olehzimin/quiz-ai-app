@@ -20,11 +20,13 @@ class Quiz {
     var icon: String
     var color: String
     var difficulty: QuizDifficulty
-    var questions: [Question]
+    private(set) var questions: [Question]
+    
     var completedQuestionsCount: Int = 0
     
-    
-//    private var questionsTypeCount: [QuestionType: Int]? = nil
+    // Cached properties, must be updated whenever questions changed
+    var questionsCount: Int = 0
+    var questionsTypeCount: [QuestionType: Int] = [:]
     
     init(name: String, set: String? = nil, tags: [String], icon: String, color: String, difficulty: QuizDifficulty, questions: [Question]) {
         self.name = name
@@ -34,38 +36,36 @@ class Quiz {
         self.color = color
         self.difficulty = difficulty
         self.questions = questions
+        
+        updateCache()
     }
 }
 
 extension Quiz {
-    var questionsCount: Int {
-        questions.count
-    }
     var completedPercent: Int {
         completedQuestionsCount * 100 / questionsCount
     }
     
-    // MARK: Rework
-    // Rework logic of question type count
-    var questionsTypeCount: [QuestionType: Int] {
-        var typeCount: [QuestionType: Int] = [
+    func updateQuestions(with newQuestions: [Question]) {
+        questions = newQuestions
+        
+        updateCache()
+    }
+    
+    private func updateCache() {
+        // Update questions count
+        questionsCount = questions.count
+        
+        // Update questions type count
+        var counts: [QuestionType: Int] = [
             .flashcard: 0,
             .multichoice: 0,
             .trueFalse: 0
         ]
-        
-        questions.forEach { question in
-            switch question.type {
-            case .flashcard:
-                typeCount[.flashcard]! += 1
-            case .multichoice:
-                typeCount[.multichoice]! += 1
-            case .trueFalse:
-                typeCount[.trueFalse]! += 1
-            }
+        for question in questions {
+            counts[question.type, default: 0] += 1
         }
-        
-        return typeCount
+        questionsTypeCount = counts
     }
 }
 

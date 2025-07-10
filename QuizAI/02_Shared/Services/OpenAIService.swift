@@ -26,7 +26,7 @@ struct OpenAIService {
               {
                 "type": "flashcard" | "multichoice" | "trueFalse",
                 "question": "Question text here.",
-                "options": ["Option A", "Option B", "Option C", "Option D"], // Leave empty for flashcards and make 2 options for trueFalse.
+                "options": ["Option A", "Option B", "Option C", "Option D"], // Leave empty for flashcards and make 2 options ["false", "true"] for trueFalse.
                 "answerIndex": 0, // Index in the options array (omit for flashcards).
                 "explanation": "Explanation or context." // Brief explanation for "multichoice", "trueFalse and more deep for "flashcard". 
               },

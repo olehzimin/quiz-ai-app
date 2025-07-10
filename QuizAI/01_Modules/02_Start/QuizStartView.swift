@@ -37,7 +37,7 @@ struct QuizStartView: View {
                 Form {
                     Section {
                         if quiz.questionsTypeCount[.multichoice] != 0 {
-                            Toggle("Multichoice", isOn: $multichoiceOption)
+                            Toggle("Multichoice", isOn: $multichoiceOption).disabled(!flashcardOption && !trueFalseOption)
                         }
                         
                         if quiz.questionsTypeCount[.flashcard] != 0 {

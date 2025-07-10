@@ -74,14 +74,13 @@ struct AddEditView: View {
                         }
                     }
                     
-                    Toggle("Multichoice", isOn: $multichoiceOption)
-                    Toggle("Flashcard", isOn: $flashcardOption)
-                    Toggle("True / False", isOn: $trueFalseOption)
+                    Toggle("Multichoice", isOn: $multichoiceOption).disabled(!flashcardOption && !trueFalseOption)
+                    Toggle("Flashcard", isOn: $flashcardOption).disabled(!multichoiceOption && !trueFalseOption)
+                    Toggle("True / False", isOn: $trueFalseOption).disabled(!multichoiceOption && !flashcardOption)
                 }
                 
             }
-            .scrollBounceBehavior(.basedOnSize)
-            
+            .scrollIndicators(.hidden)
         }
         .toolbar {
             Button(editMode ? "Save" : "Generate") {
@@ -122,4 +121,6 @@ extension AddEditView {
         
         return result
     }
+    
+//    private var last
 }
