@@ -13,6 +13,7 @@ struct QuizStartView: View {
     @State private var multichoiceOption: Bool = true
     @State private var flashcardOption: Bool = true
     @State private var trueFalseOption: Bool = true
+    
     @State private var timerOption: Bool = false
     @State private var timerMinutes: Int = 0
     @State private var timerSeconds: Int = 20
@@ -23,9 +24,9 @@ struct QuizStartView: View {
     var chosenTasks: Int {
         var total: Int = 0
         
-        if multichoiceOption { total += quiz.questionsTypeCount[.multichoice] ?? 0 }
-        if flashcardOption { total += quiz.questionsTypeCount[.flashcard] ?? 0 }
-        if trueFalseOption { total += quiz.questionsTypeCount[.trueFalse] ?? 0 }
+        if multichoiceOption { total += quiz.questionsTypeCounts[.multichoice] ?? 0 }
+        if flashcardOption { total += quiz.questionsTypeCounts[.flashcard] ?? 0 }
+        if trueFalseOption { total += quiz.questionsTypeCounts[.trueFalse] ?? 0 }
         
         return total
     }
@@ -36,22 +37,36 @@ struct QuizStartView: View {
                 
                 Form {
                     Section {
-                        if quiz.questionsTypeCount[.multichoice] != 0 {
+                        if quiz.questionsTypeCounts[.multichoice] != 0 {
                             Toggle("Multichoice", isOn: $multichoiceOption).disabled(!flashcardOption && !trueFalseOption)
                         }
                         
-                        if quiz.questionsTypeCount[.flashcard] != 0 {
-                            Toggle("Flashcard", isOn: $flashcardOption)
+                        if quiz.questionsTypeCounts[.flashcard] != 0 {
+                            Toggle("Flashcard", isOn: $flashcardOption).disabled(!multichoiceOption && !trueFalseOption)
                         }
                         
-                        if quiz.questionsTypeCount[.trueFalse] != 0 {
-                            Toggle("True / False", isOn: $trueFalseOption)
+                        if quiz.questionsTypeCounts[.trueFalse] != 0 {
+                            Toggle("True / False", isOn: $trueFalseOption).disabled(!flashcardOption && !multichoiceOption)
                         }
                         
                         Text("Chosen tasks: \(chosenTasks)")
                             .frame(maxWidth: .infinity, alignment: .trailing)
                     }
                     .tint(Color(quiz.color))
+                    .onAppear {
+                        for questionTypeCount in quiz.questionsTypeCounts {
+                            switch questionTypeCount {
+                            case (.flashcard, 0):
+                                flashcardOption = false
+                            case (.multichoice, 0):
+                                multichoiceOption = false
+                            case (.trueFalse, 0):
+                                trueFalseOption = false
+                            default:
+                                continue
+                            }
+                        }
+                    }
                     
                     Section {
                         Toggle("Timer", isOn: $timerOption)

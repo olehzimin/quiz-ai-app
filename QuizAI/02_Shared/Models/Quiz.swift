@@ -26,7 +26,7 @@ class Quiz {
     
     // Cached properties, must be updated whenever questions changed
     var questionsCount: Int = 0
-    var questionsTypeCount: [QuestionType: Int] = [:]
+    var questionsTypeCounts: [QuestionType: Int] = [:]
     
     init(name: String, set: String? = nil, tags: [String], icon: String, color: String, difficulty: QuizDifficulty, questions: [Question]) {
         self.name = name
@@ -65,7 +65,7 @@ extension Quiz {
         for question in questions {
             counts[question.type, default: 0] += 1
         }
-        questionsTypeCount = counts
+        questionsTypeCounts = counts
     }
 }
 
