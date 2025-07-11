@@ -18,6 +18,7 @@ struct AddEditView: View {
     
     @State private var optionalTopicPreferences: Bool = false
     @State private var detailedTopic: String = ""
+    private let symbolsLimit = 100
     
     @State private var questionsCount: Int = 5
     @State private var difficulty = QuizDifficulty.medium
@@ -44,6 +45,17 @@ struct AddEditView: View {
                     if optionalTopicPreferences {
                         TextField("Additional info about topic", text: $detailedTopic, axis: .vertical)
                             .lineLimit(3)
+                            .onChange(of: detailedTopic) { oldValue, newValue in
+                                if newValue.count > symbolsLimit {
+                                    detailedTopic = oldValue
+                                }
+                            }
+                    }
+                } footer: {
+                    HStack {
+                        Spacer()
+                        Text("\(detailedTopic.count)/\(symbolsLimit)")
+                            .opacity(optionalTopicPreferences ? 1 : 0)
                     }
                 }
                 
@@ -81,6 +93,7 @@ struct AddEditView: View {
                 
             }
             .scrollIndicators(.hidden)
+            .submitLabel(.done)
         }
         .toolbar {
             Button(editMode ? "Save" : "Generate") {
@@ -121,6 +134,4 @@ extension AddEditView {
         
         return result
     }
-    
-//    private var last
 }
