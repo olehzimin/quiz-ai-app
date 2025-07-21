@@ -5,7 +5,7 @@
 //  Created by Oleh Zimin on 15.06.2025.
 //
 
-import Foundation
+import SwiftUI
 import SwiftData
 
 enum QuizDifficulty: String, Codable, CaseIterable {
@@ -13,22 +13,23 @@ enum QuizDifficulty: String, Codable, CaseIterable {
 }
 
 @Model
-class Quiz {
+class Quiz: Identifiable {
+    var id: UUID
     var name: String
     var set: String?
     var tags: [String]
     var icon: String
     var color: String
     var difficulty: QuizDifficulty
-    private(set) var questions: [Question]
-    
-    var completedQuestionsCount: Int = 0
+    @Relationship(deleteRule: .cascade) var questions: [Question]
     
     // Cached properties, must be updated whenever questions changed
-    var questionsCount: Int = 0
-    var questionsTypeCounts: [QuestionType: Int] = [:]
+    private(set) var questionsCount: Int = 0
+    private(set) var questionsTypeCounts: [QuestionType: Int] = [:]
+    private(set) var completedQuestionsCount: Int = 0
     
     init(name: String, set: String? = nil, tags: [String], icon: String, color: String, difficulty: QuizDifficulty, questions: [Question]) {
+        self.id = UUID()
         self.name = name
         self.set = set
         self.tags = tags
@@ -52,6 +53,20 @@ extension Quiz {
         updateCache()
     }
     
+    func shuffle(questions: Bool, options: Bool) {
+        self.tags.shuffle()
+        print("tags shuffled")
+//        if questions {
+//            self.questions.shuffle()
+//        }
+//        
+//        if options {
+//            for index in self.questions.indices {
+//                self.questions[index].shuffleOptions()
+//            }
+//        }
+    }
+    
     private func updateCache() {
         // Update questions count
         questionsCount = questions.count
@@ -66,6 +81,12 @@ extension Quiz {
             counts[question.type, default: 0] += 1
         }
         questionsTypeCounts = counts
+    }
+    
+    func updateCompletedQuestions() {
+        let completed = questions.filter { $0.completed == true }
+        
+        completedQuestionsCount = completed.count
     }
 }
 

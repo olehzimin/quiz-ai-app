@@ -27,8 +27,6 @@ struct HomeView: View {
                             .onTapGesture {
                                 selectedQuiz = quiz
                             }
-                            
-                            
                     }
                 }
                 .padding()

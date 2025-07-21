@@ -98,7 +98,7 @@ struct QuizStartView: View {
                     Button {
                         dismiss()
                         path.append(quiz)
-                        quiz.completedQuestionsCount = 0
+//                        quiz.completedQuestionsCount = 0
                     } label: {
                         Text("Start Quiz")
                             .bold()

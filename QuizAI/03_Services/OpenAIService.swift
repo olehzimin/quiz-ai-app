@@ -26,8 +26,8 @@ struct OpenAIService {
               {
                 "type": "flashcard" | "multichoice" | "trueFalse",
                 "question": "Question text here.",
-                "options": ["Option A", "Option B", "Option C", "Option D"], // Leave empty for flashcards and make 2 options ["false", "true"] for trueFalse.
-                "answerIndex": 0, // Index in the options array (omit for flashcards).
+                "options": ["Option A", "Option B", "Option C", "Option D"], // For flashcards make 2 options: ["repeat", "know"] and for trueFalse: ["false", "true"] .
+                "answerIndex": 0, // Index in the options array (for flashcards always index of "know" option).
                 "explanation": "Explanation or context." // Brief explanation for "multichoice", "trueFalse and more deep for "flashcard". 
               },
               ...
@@ -35,7 +35,7 @@ struct OpenAIService {
 
             # Rules
             - Only use the types: "flashcard", "multichoice", or "trueFalse".
-            - For "flashcard", leave "options" empty and omit "answerIndex".
+            - For "flashcard", asign index of "know" option to the "answerIndex".
             - All questions must be relevant, clear, and match the requested topic and difficulty.
             - Consider that difficulty levels are only 3: "easy", "medium", "hard".
             - Provide a balanced mix of question types if multiple are requested.
