@@ -1,5 +1,5 @@
 //
-//  OpenAIService.swift
+//  OpenAIUtility.swift
 //  QuizAI
 //
 //  Created by Oleh Zimin on 17.06.2025.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct OpenAIService {
+struct OpenAIUtility {
     private init() {}
     
     static private let apiURL: URL? = URL(string: "https://api.openai.com/v1/chat/completions")
@@ -59,7 +59,7 @@ struct OpenAIService {
         )
     }
     
-    static func generateQuestions(topic: String, questionsCount: Int, types: [QuestionType], difficulty: QuizDifficulty) async throws -> [Question] {
+    static func generateQuestions(topic: String, questionsCount: Int, types: [QuestionType], difficulty: QuizDifficulty) async throws -> [QuestionModel] {
         let userMassage = userMessage(topic: topic, questionsCount: questionsCount, types: types, difficulty: difficulty)
         let openAIRequestBody = OpenAIRequestBody(model: model, messages: [systemMessage, userMassage])
         
@@ -88,7 +88,7 @@ struct OpenAIService {
         }
         
         // Decode recieved questions data
-        let questions = try JSONDecoder().decode([Question].self, from: questionsData)
+        let questions = try JSONDecoder().decode([QuestionModel].self, from: questionsData)
         
         return questions
     }

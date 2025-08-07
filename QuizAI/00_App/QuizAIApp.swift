@@ -13,7 +13,7 @@ struct QuizAIApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .modelContainer(for: Quiz.self)
+                .modelContainer(for: QuizModel.self)
         }
     }
 }

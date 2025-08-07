@@ -1,5 +1,5 @@
 //
-//  Quiz.swift
+//  QuizModel.swift
 //  QuizAI
 //
 //  Created by Oleh Zimin on 15.06.2025.
@@ -13,7 +13,7 @@ enum QuizDifficulty: String, Codable, CaseIterable {
 }
 
 @Model
-class Quiz: Identifiable {
+final class QuizModel: Identifiable {
     var id: UUID
     var name: String
     var set: String?
@@ -21,14 +21,14 @@ class Quiz: Identifiable {
     var icon: String
     var color: String
     var difficulty: QuizDifficulty
-    @Relationship(deleteRule: .cascade) var questions: [Question]
+    var questions: [QuestionModel]
     
     // Cached properties, must be updated whenever questions changed
     private(set) var questionsCount: Int = 0
     private(set) var questionsTypeCounts: [QuestionType: Int] = [:]
     private(set) var completedQuestionsCount: Int = 0
     
-    init(name: String, set: String? = nil, tags: [String], icon: String, color: String, difficulty: QuizDifficulty, questions: [Question]) {
+    init(name: String, set: String? = nil, tags: [String], icon: String, color: String, difficulty: QuizDifficulty, questions: [QuestionModel]) {
         self.id = UUID()
         self.name = name
         self.set = set
@@ -42,36 +42,28 @@ class Quiz: Identifiable {
     }
 }
 
-extension Quiz {
+extension QuizModel {
     var completedPercent: Int {
         completedQuestionsCount * 100 / questionsCount
     }
     
-    func updateQuestions(with newQuestions: [Question]) {
+    func resetQuestions(with newQuestions: [QuestionModel]) {
         questions = newQuestions
         
         updateCache()
     }
     
-    func shuffle(questions: Bool, options: Bool) {
-        self.tags.shuffle()
-        print("tags shuffled")
-//        if questions {
-//            self.questions.shuffle()
-//        }
-//        
-//        if options {
-//            for index in self.questions.indices {
-//                self.questions[index].shuffleOptions()
-//            }
-//        }
+    func updateCache() {
+        updateQuestionsCount()
+        updateQuestionsTypeCounts()
+        updateCompletedQuestionsCount()
     }
     
-    private func updateCache() {
-        // Update questions count
+    private func updateQuestionsCount() {
         questionsCount = questions.count
-        
-        // Update questions type count
+    }
+    
+    private func updateQuestionsTypeCounts() {
         var counts: [QuestionType: Int] = [
             .flashcard: 0,
             .multichoice: 0,
@@ -83,16 +75,15 @@ extension Quiz {
         questionsTypeCounts = counts
     }
     
-    func updateCompletedQuestions() {
-        let completed = questions.filter { $0.completed == true }
-        
+    private func updateCompletedQuestionsCount() {
+        let completed = questions.filter { $0.isCompleted == true }
         completedQuestionsCount = completed.count
     }
 }
 
-extension Quiz {
-    static var mockQuestions: [Question]? {
-        var questions: [Question] = []
+extension QuizModel {
+    static var mockQuestions: [QuestionModel]? {
+        var questions: [QuestionModel] = []
         guard let url = Bundle.main.url(forResource: "QuestionsSample.json", withExtension: nil) else {
             print("URL error")
             return nil
@@ -103,16 +94,16 @@ extension Quiz {
             return nil
         }
         
-        if let decodedQuestions = try? JSONDecoder().decode([Question].self, from: data) {
+        if let decodedQuestions = try? JSONDecoder().decode([QuestionModel].self, from: data) {
             questions = decodedQuestions
         }
         
         return questions
     }
     
-    static var mock: Quiz? {
+    static var mock: QuizModel? {
         if let questions = Self.mockQuestions {
-            let newQuiz = Quiz(
+            let newQuiz = QuizModel(
                 name: "Sample Quiz",
                 set: nil,
                 tags: ["General", "Quiz", "Sample"],

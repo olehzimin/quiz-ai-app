@@ -1,5 +1,5 @@
 //
-//  QuizManager.swift
+//  QuizService.swift
 //  QuizAI
 //
 //  Created by Oleh Zimin on 09.07.2025.
@@ -8,11 +8,11 @@
 import Foundation
 
 @Observable
-class QuizManager {
-    static let shared: QuizManager = QuizManager()
+class QuizService {
+    static let shared: QuizService = QuizService()
     private init() { }
     
-    private var cachedQuiz: Quiz? = nil
+    private var cachedQuiz: QuizModel? = nil
     private(set) var isGenerating: Bool = false
     
     func generateQuiz(name: String, set: String? = nil, tags: [String], icon: String, color: String,
@@ -23,14 +23,14 @@ class QuizManager {
         
         Task {
             do {
-                let questions = try await OpenAIService.generateQuestions(
+                let questions = try await OpenAIUtility.generateQuestions(
                     topic: topic,
                     questionsCount: questionsCount,
                     types: types,
                     difficulty: difficulty
                 )
                 
-                cachedQuiz = Quiz(
+                cachedQuiz = QuizModel(
                     name: name,
                     set: set,
                     tags: tags,
@@ -48,7 +48,7 @@ class QuizManager {
         }
     }
     
-    func getLastGeneratedQuiz() throws -> Quiz {
+    func getLastGeneratedQuiz() throws -> QuizModel {
         if let newQuiz = cachedQuiz {
             cachedQuiz = nil
             return newQuiz

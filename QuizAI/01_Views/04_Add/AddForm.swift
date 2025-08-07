@@ -1,5 +1,5 @@
 //
-//  AddEditView.swift
+//  AddForm.swift
 //  QuizAI
 //
 //  Created by Oleh Zimin on 15.06.2025.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AddEditView: View {
+struct AddForm: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) private var dismiss
     
@@ -27,7 +27,7 @@ struct AddEditView: View {
     @State private var flashcardOption: Bool = true
     @State private var trueFalseOption: Bool = true
     
-    @State private var quizManager = QuizManager.shared
+    @State private var quizManager = QuizService.shared
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -110,11 +110,11 @@ struct AddEditView: View {
 
 #Preview {
     NavigationStack {
-        AddEditView(editMode: false)
+        AddForm(editMode: false)
     }
 }
 
-extension AddEditView {
+extension AddForm {
     private var isValid: Bool {
         var result = false
         

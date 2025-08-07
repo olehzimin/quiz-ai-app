@@ -1,5 +1,5 @@
 //
-//  QuizStartView.swift
+//  StartSheet.swift
 //  QuizAI
 //
 //  Created by Oleh Zimin on 13.06.2025.
@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct QuizStartView: View {
-    var quiz: Quiz
+struct StartSheet: View {
+    var quiz: QuizModel
     @Binding var path: NavigationPath
     @State private var multichoiceOption: Bool = true
     @State private var flashcardOption: Bool = true
@@ -18,6 +18,7 @@ struct QuizStartView: View {
     @State private var timerMinutes: Int = 0
     @State private var timerSeconds: Int = 20
     
+    @Environment(GameService.self) var gameService
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) var dismiss
     
@@ -98,6 +99,7 @@ struct QuizStartView: View {
                     Button {
                         dismiss()
                         path.append(quiz)
+                        gameService.startGame(with: quiz)
 //                        quiz.completedQuestionsCount = 0
                     } label: {
                         Text("Start Quiz")
@@ -123,12 +125,12 @@ struct QuizStartView: View {
 }
 
 #Preview {
-    if let quiz = Quiz.mock {
-        QuizStartView(quiz: quiz, path: .constant(NavigationPath()))
+    if let quiz = QuizModel.mock {
+        StartSheet(quiz: quiz, path: .constant(NavigationPath()))
     }
 }
 
-extension QuizStartView {
+extension StartSheet {
     private var headerView: some View {
         VStack(spacing: 8) {
             HStack(alignment: .top) {

@@ -1,5 +1,5 @@
 //
-//  QuizView.swift
+//  GameView.swift
 //  QuizAI
 //
 //  Created by Oleh Zimin on 13.06.2025.
@@ -7,45 +7,50 @@
 
 import SwiftUI
 
-struct QuizView: View {
-    @Environment(\.dismiss) var dismiss
+struct GameView: View {
+    // MARK: delete quiz passing
+    let quiz: QuizModel
     @Binding var path: NavigationPath
-    @State private var viewModel: QuizViewModel
     
-    init(quiz: Quiz, path: Binding<NavigationPath>) {
+    
+    init(quiz: QuizModel, path: Binding<NavigationPath>) {
+        self.quiz = quiz
         _path = path
-        _viewModel = State(wrappedValue: QuizViewModel(quiz: quiz))
+        print("Creation of GameView")
     }
+    
+    @Environment(GameService.self) var gameService
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         VStack {
-            if !viewModel.isQuizFinished {
+            if !gameService.isQuizFinished {
                 VStack {
-                    HeaderQuizView(viewModel: viewModel, timer: true)
+                    GameHeader(showsTimer: true)
                     
-                    QuestionView(viewModel: viewModel)
-                }
-            } else {
-                Text("Well done! \nYour score: \(viewModel.quiz.completedQuestionsCount) / \(viewModel.quiz.questionsCount)")
-                    .frame(maxHeight: .infinity, alignment: .center)
-            }
-            
-            Spacer()
-            
-            if !viewModel.isQuizFinished {
-                Button(action: viewModel.nextQuestion) {
-                    ZStack {
-                        Capsule()
-                        
-                        Text("Continue")
-                            .foregroundStyle(.white)
+                    QuestionView()
+                    
+                    Spacer()
+                    
+                    Button(action: gameService.continueToNextQuestion) {
+                        ZStack {
+                            Capsule()
+                            
+                            Text("Continue")
+                                .foregroundStyle(.white)
+                        }
+                        .frame(height: 60)
+                        .opacity(gameService.isQuestionAnswered ? 1 : 0)
                     }
-                    .frame(height: 60)
-                    .opacity(viewModel.isQuestionAnswered ? 1 : 0)
+                    .disabled(!gameService.isQuestionAnswered)
+                    .buttonStyle(PressableButtonStyle())
                 }
-                .disabled(!viewModel.isQuestionAnswered)
-                .buttonStyle(PressableButtonStyle())
             } else {
+                Text("Well done! \nYour score: \(quiz.completedQuestionsCount) / \(quiz.questionsCount)")
+                    .frame(maxHeight: .infinity, alignment: .center)
+                
+                Spacer()
+                
                 Button {
                     path.removeLast()
                 } label: {
@@ -61,10 +66,12 @@ struct QuizView: View {
             }
         }
         .padding(.horizontal)
+        .environment(gameService)
         .navigationBarBackButtonHidden()
         .safeAreaInset(edge: .top) {
             HStack(spacing: 32) {
                 Button {
+//                    quiz.updateCompletedQuestions()
                     path.removeLast()
                 } label: {
                     Image(systemName: "xmark")
@@ -81,9 +88,11 @@ struct QuizView: View {
 }
 
 #Preview {
-    if let quiz = Quiz.mock {
-        QuizView(quiz: quiz, path: .constant(NavigationPath()))
-    }
+    guard let quiz = QuizModel.mock else { return ProgressView() }
+    GameService.shared.startGame(with: quiz)
+    
+    return GameView(quiz: quiz, path: .constant(NavigationPath()))
+        .environment(GameService.shared)
 }
 
 //fileprivate struct FlashcardView: View {

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct QuizRowView: View {
-    let quiz: Quiz
+    let quiz: QuizModel
     
     var body: some View {
         ZStack {
@@ -63,7 +63,7 @@ struct QuizRowView: View {
 }
 
 #Preview {
-    if let quiz = Quiz.mock {
+    if let quiz = QuizModel.mock {
         QuizRowView(quiz: quiz)
             .padding()
     }

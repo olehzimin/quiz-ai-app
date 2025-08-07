@@ -10,13 +10,13 @@ import SwiftData
 
 struct HomeView: View {
     @Environment(\.modelContext) var modelContext
-    @Query(sort: \Quiz.name) var quizes: [Quiz]
+    @Query(sort: \QuizModel.name) var quizes: [QuizModel]
     
-    @State private var quizManager = QuizManager.shared
+    @State private var quizManager = QuizService.shared
     @State private var showMessage: Bool = false
     
     @Binding var path: NavigationPath
-    @State private var selectedQuiz: Quiz? = nil
+    @State private var selectedQuiz: QuizModel? = nil
     
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
@@ -32,7 +32,7 @@ struct HomeView: View {
                 .padding()
             }
             .sheet(item: $selectedQuiz) { quiz in
-                QuizStartView(quiz: quiz, path: $path)
+                StartSheet(quiz: quiz, path: $path)
                     .presentationDetents([.large])
                     .presentationDragIndicator(.visible)
             }
@@ -43,12 +43,12 @@ struct HomeView: View {
             .frame(maxWidth: .infinity, alignment: .trailing)
             .padding()
         }
-        .navigationDestination(for: Quiz.self) { quiz in
-            QuizView(quiz: quiz, path: $path)
+        .navigationDestination(for: QuizModel.self) { quiz in
+            GameView(quiz: quiz, path: $path)
         }
         .navigationDestination(for: String.self) { value in
             if value == "addView" {
-                AddEditView(editMode: false)
+                AddForm(editMode: false)
             }
         }
         .navigationTitle("Challenge yourself")
@@ -77,12 +77,12 @@ struct HomeView: View {
     NavigationStack {
         HomeView(path: .constant(NavigationPath()))
     }
-    .modelContainer(for: Quiz.self, inMemory: true)
+    .modelContainer(for: QuizModel.self, inMemory: true)
 }
 
 extension HomeView {
     func loadQuizes() {
-        if let quiz = Quiz.mock {
+        if let quiz = QuizModel.mock {
             print("inserted")
             modelContext.insert(quiz)
         }
