@@ -8,27 +8,22 @@
 import SwiftUI
 
 struct QuestionView: View {
+    let question: QuestionModel
     @Environment(GameService.self) private var gameService
     
     let columns: [GridItem] = [GridItem(), GridItem()]
     
     var body: some View {
         VStack {
-            QuestionCard(question: gameService.currentQuestion)
+            QuestionCard(question: question)
                 .frame(height: 360)
             
             LazyVGrid(columns: columns) {
-                ForEach(Array(gameService.currentQuestion.options.enumerated()), id: \.offset) { index, option in
-                    OptionButtonView(
+                ForEach(Array(question.options.enumerated()), id: \.offset) { index, option in
+                    OptionButton(
                         option: option,
-                        isCorrect: index == gameService.currentQuestion.answerIndex
-                    ) {
-                        gameService.isQuestionAnswered = true
-                        if index == gameService.currentQuestion.answerIndex {
-//                            gameService.currentQuestion.completed = true
-                        }
-                    }
-                    .disabled(gameService.isQuestionAnswered)
+                        isCorrect: index == question.answerIndex
+                    )
                 }
             }
             .padding(.vertical)
@@ -37,11 +32,12 @@ struct QuestionView: View {
 }
 
 #Preview {
-    if let quiz = QuizModel.mock {
-        GameService.shared.startGame(with: quiz)
+    guard let quiz = QuizModel.mock, let question = quiz.questions.first else {
+        return ProgressView()
     }
+    GameService.shared.setGame(with: quiz, timing: .unlimited)
     
-    return QuestionView()
+    return QuestionView(question: question)
         .environment(GameService.shared)
 }
 
@@ -63,30 +59,13 @@ fileprivate struct QuestionCard: View {
     }
 }
 
-fileprivate struct OptionButtonView: View {
-    private enum ButtonState {
-        case neutral, correct, wrong
-        
-        var color: Color {
-            switch self {
-            case .neutral:
-                Color.secondary.opacity(0.3)
-            case .correct:
-                Color.green
-            case .wrong:
-                Color.red
-            }
-        }
-    }
-    
+fileprivate struct OptionButton: View {
     let option: String
     let isCorrect: Bool
-    let action: () -> Void
     
-    init(option: String, isCorrect: Bool, action: @escaping () -> Void) {
+    init(option: String, isCorrect: Bool) {
         self.option = option
         self.isCorrect = isCorrect
-        self.action = action
     }
     
     @State private var buttonState: ButtonState = .neutral
@@ -97,7 +76,8 @@ fileprivate struct OptionButtonView: View {
     var body: some View {
         Button {
 //            isTapped = true
-            action()
+            gameService.answer(with: option, isCorrect: isCorrect)
+            gameService.isQuestionAnswered = true
             if !isCorrect {
                 buttonState = .wrong
             }
@@ -110,7 +90,7 @@ fileprivate struct OptionButtonView: View {
             }
             .frame(height: 80)
         }
-        
+        .disabled(gameService.isQuestionAnswered)
         .onChange(of: gameService.isQuestionAnswered, updateButton)
         .buttonStyle(PressableButtonStyle())
     }
@@ -131,6 +111,7 @@ fileprivate struct OptionButtonView: View {
         
         if gameService.isQuestionAnswered && isCorrect {
             buttonState = .correct
+//            gameService.currentQuestion.isCompleted = true
         } else if !gameService.isQuestionAnswered {
             buttonState = .neutral
         }
@@ -138,5 +119,20 @@ fileprivate struct OptionButtonView: View {
 //        if gameService.isQuestionAnswered && isTaped && !isCorrect {
 //            buttonState = .wrong
 //        }
+    }
+    
+    private enum ButtonState {
+        case neutral, correct, wrong
+        
+        var color: Color {
+            switch self {
+            case .neutral:
+                Color.secondary.opacity(0.3)
+            case .correct:
+                Color.green
+            case .wrong:
+                Color.red
+            }
+        }
     }
 }

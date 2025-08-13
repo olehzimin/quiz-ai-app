@@ -44,7 +44,7 @@ struct HomeView: View {
             .padding()
         }
         .navigationDestination(for: QuizModel.self) { quiz in
-            GameView(quiz: quiz, path: $path)
+            GameView(path: $path)
         }
         .navigationDestination(for: String.self) { value in
             if value == "addView" {

@@ -10,28 +10,38 @@ import SwiftUI
 struct StartSheet: View {
     var quiz: QuizModel
     @Binding var path: NavigationPath
-    @State private var multichoiceOption: Bool = true
-    @State private var flashcardOption: Bool = true
-    @State private var trueFalseOption: Bool = true
     
-    @State private var timerOption: Bool = false
+    @State private var isMultichoiceEnabled: Bool = true
+    @State private var isFlashcardEnabled: Bool = true
+    @State private var isTrueFalseEnabled: Bool = true
+    
+    @State private var isTimerEnabled: Bool = false
     @State private var timerMinutes: Int = 0
     @State private var timerSeconds: Int = 20
     
-    @Environment(GameService.self) var gameService
-    @Environment(\.modelContext) var modelContext
-    @Environment(\.dismiss) var dismiss
+    @Environment(GameService.self) private var gameService
+    @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
     
+    // MARK: Computed
     var chosenTasks: Int {
         var total: Int = 0
         
-        if multichoiceOption { total += quiz.questionsTypeCounts[.multichoice] ?? 0 }
-        if flashcardOption { total += quiz.questionsTypeCounts[.flashcard] ?? 0 }
-        if trueFalseOption { total += quiz.questionsTypeCounts[.trueFalse] ?? 0 }
+        if isMultichoiceEnabled { total += quiz.questionsTypeCounts[.multichoice] ?? 0 }
+        if isFlashcardEnabled { total += quiz.questionsTypeCounts[.flashcard] ?? 0 }
+        if isTrueFalseEnabled { total += quiz.questionsTypeCounts[.trueFalse] ?? 0 }
         
         return total
     }
     
+    var timing: GameTiming {
+        guard isTimerEnabled else { return .unlimited }
+        let total = timerMinutes*60 + timerSeconds
+        
+        return .countdown(seconds: total)
+    }
+    
+    // MARK: Body
     var body: some View {
             VStack(spacing: 0) {
                 headerView
@@ -39,15 +49,15 @@ struct StartSheet: View {
                 Form {
                     Section {
                         if quiz.questionsTypeCounts[.multichoice] != 0 {
-                            Toggle("Multichoice", isOn: $multichoiceOption).disabled(!flashcardOption && !trueFalseOption)
+                            Toggle("Multichoice", isOn: $isMultichoiceEnabled).disabled(!isFlashcardEnabled && !isTrueFalseEnabled)
                         }
                         
                         if quiz.questionsTypeCounts[.flashcard] != 0 {
-                            Toggle("Flashcard", isOn: $flashcardOption).disabled(!multichoiceOption && !trueFalseOption)
+                            Toggle("Flashcard", isOn: $isFlashcardEnabled).disabled(!isMultichoiceEnabled && !isTrueFalseEnabled)
                         }
                         
                         if quiz.questionsTypeCounts[.trueFalse] != 0 {
-                            Toggle("True / False", isOn: $trueFalseOption).disabled(!flashcardOption && !multichoiceOption)
+                            Toggle("True / False", isOn: $isTrueFalseEnabled).disabled(!isFlashcardEnabled && !isMultichoiceEnabled)
                         }
                         
                         Text("Chosen tasks: \(chosenTasks)")
@@ -58,11 +68,11 @@ struct StartSheet: View {
                         for questionTypeCount in quiz.questionsTypeCounts {
                             switch questionTypeCount {
                             case (.flashcard, 0):
-                                flashcardOption = false
+                                isFlashcardEnabled = false
                             case (.multichoice, 0):
-                                multichoiceOption = false
+                                isMultichoiceEnabled = false
                             case (.trueFalse, 0):
-                                trueFalseOption = false
+                                isTrueFalseEnabled = false
                             default:
                                 continue
                             }
@@ -70,11 +80,11 @@ struct StartSheet: View {
                     }
                     
                     Section {
-                        Toggle("Timer", isOn: $timerOption)
+                        Toggle("Timer", isOn: $isTimerEnabled)
                             .tint(Color(quiz.color))
                             
                         
-                        if timerOption {
+                        if isTimerEnabled {
                             HStack {
                                 Picker("Set minutes", selection: $timerMinutes) {
                                     ForEach(0..<11) { interval in
@@ -99,8 +109,7 @@ struct StartSheet: View {
                     Button {
                         dismiss()
                         path.append(quiz)
-                        gameService.startGame(with: quiz)
-//                        quiz.completedQuestionsCount = 0
+                        gameService.setGame(with: quiz, timing: timing)
                     } label: {
                         Text("Start Quiz")
                             .bold()
@@ -117,7 +126,7 @@ struct StartSheet: View {
                 }
                 .scrollBounceBehavior(.basedOnSize)
             }
-            .animation(.default, value: timerOption)
+            .animation(.default, value: isTimerEnabled)
             .safeAreaInset(edge: .top) {
                 navigationBarView
             }

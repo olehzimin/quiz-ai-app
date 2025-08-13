@@ -8,25 +8,29 @@
 import SwiftUI
 
 struct GameHeader: View {
-    var showsTimer: Bool
-    
     @Environment(GameService.self) private var gameService
     
-    // MARK: Unwrap
+    // MARK: Body
     var body: some View {
         Text("\(gameService.currentQuestionIndex + 1) / \(gameService.quiz!.questionsCount)")
         
-        if showsTimer {
-            Text("timer")
+        if gameService.timing.isTimed {
+            Text("\(gameService.remainingQuestionTime)")
+                .onChange(of: gameService.remainingQuestionTime) { oldValue, newValue in
+                    if newValue == 0 {
+                        gameService.continueToNextQuestion()
+                    }
+                }
         }
+            
     }
 }
 
 #Preview {
     if let quiz = QuizModel.mock {
-        GameService.shared.startGame(with: quiz)
+        GameService.shared.setGame(with: quiz, timing: .countdown(seconds: 10))
     }
     
-    return GameHeader(showsTimer: true)
+    return GameHeader()
         .environment(GameService.shared)
 }

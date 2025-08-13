@@ -8,8 +8,7 @@
 import Foundation
 
 struct OpenAIUtility {
-    private init() {}
-    
+    private init() { }
     static private let apiURL: URL? = URL(string: "https://api.openai.com/v1/chat/completions")
     static private let model = "gpt-4.1-mini"
     

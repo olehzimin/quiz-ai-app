@@ -8,27 +8,19 @@
 import SwiftUI
 
 struct GameView: View {
-    // MARK: delete quiz passing
-    let quiz: QuizModel
     @Binding var path: NavigationPath
-    
-    
-    init(quiz: QuizModel, path: Binding<NavigationPath>) {
-        self.quiz = quiz
-        _path = path
-        print("Creation of GameView")
-    }
     
     @Environment(GameService.self) var gameService
     @Environment(\.dismiss) var dismiss
     
+    //MARK: Body
     var body: some View {
         VStack {
-            if !gameService.isQuizFinished {
+            if let question = gameService.currentQuestion {
                 VStack {
-                    GameHeader(showsTimer: true)
+                    GameHeader()
                     
-                    QuestionView()
+                    QuestionView(question: question)
                     
                     Spacer()
                     
@@ -46,12 +38,13 @@ struct GameView: View {
                     .buttonStyle(PressableButtonStyle())
                 }
             } else {
-                Text("Well done! \nYour score: \(quiz.completedQuestionsCount) / \(quiz.questionsCount)")
+                Text("Well done! \nYour score: \(gameService.gameScore)")
                     .frame(maxHeight: .infinity, alignment: .center)
                 
                 Spacer()
                 
                 Button {
+                    gameService.finishGame()
                     path.removeLast()
                 } label: {
                     ZStack {
@@ -84,14 +77,21 @@ struct GameView: View {
             .padding(.top, 32)
             .foregroundStyle(.black)
         }
+        .onAppear {
+            do {
+                try gameService.startGame()
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
     }
 }
 
 #Preview {
     guard let quiz = QuizModel.mock else { return ProgressView() }
-    GameService.shared.startGame(with: quiz)
+    GameService.shared.setGame(with: quiz, timing: .countdown(seconds: 10))
     
-    return GameView(quiz: quiz, path: .constant(NavigationPath()))
+    return GameView(path: .constant(NavigationPath()))
         .environment(GameService.shared)
 }
 
