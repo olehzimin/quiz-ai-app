@@ -18,6 +18,8 @@ struct GameHeader: View {
             Text("\(gameService.remainingQuestionTime)")
                 .onChange(of: gameService.remainingQuestionTime) { oldValue, newValue in
                     if newValue == 0 {
+                        // Methods used incorrectly
+                        gameService.answer(with: "", isCorrect: false)
                         gameService.continueToNextQuestion()
                     }
                 }
