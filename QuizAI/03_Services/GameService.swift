@@ -109,23 +109,12 @@ final class GameService {
         }
     }
     
-    
-    
-    
     // MARK: Private Methods
     private func shuffledOptions(question: QuestionModel) -> QuestionModel {
+        guard question.type == .multichoice else { return question }
+        
         var modifiedQuestion = question
-        
-        guard modifiedQuestion.type == .multichoice else { return question }
-
-        let correctAnswer = modifiedQuestion.options[modifiedQuestion.answerIndex]
         modifiedQuestion.options.shuffle()
-        
-        if let newAnswerIndex = modifiedQuestion.options.firstIndex(of: correctAnswer) {
-            modifiedQuestion.answerIndex =  newAnswerIndex
-        } else {
-            print("Error: rewriting answer index failed")
-        }
         
         return modifiedQuestion
     }

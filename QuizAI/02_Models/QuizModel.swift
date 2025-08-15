@@ -82,40 +82,33 @@ extension QuizModel {
 }
 
 extension QuizModel {
-    static var mockQuestions: [QuestionModel]? {
+    static func mockQuestions() throws -> [QuestionModel] {
         var questions: [QuestionModel] = []
-        guard let url = Bundle.main.url(forResource: "QuestionsSample.json", withExtension: nil) else {
-            print("URL error")
-            return nil
-        }
         
-        guard let data = try? Data(contentsOf: url) else {
-            print("Data error")
-            return nil
-        }
-        
-        if let decodedQuestions = try? JSONDecoder().decode([QuestionModel].self, from: data) {
-            questions = decodedQuestions
-        }
+        guard let url = Bundle.main.url(forResource: "QuestionsSample.json", withExtension: nil) else { throw URLError(.badURL) }
+        let data = try Data(contentsOf: url)
+        questions = try JSONDecoder().decode([QuestionModel].self, from: data)
         
         return questions
     }
     
-    static var mock: QuizModel? {
-        if let questions = Self.mockQuestions {
-            let newQuiz = QuizModel(
-                name: "Sample Quiz",
-                set: nil,
-                tags: ["General", "Quiz", "Sample"],
-                icon: "sun.max",
-                color: "greenQuiz",
-                difficulty: .medium,
-                questions: questions)
-            
-            return newQuiz
+    static func mockQuiz() -> QuizModel {
+        var newQuiz = QuizModel(
+            name: "Sample Quiz",
+            set: nil,
+            tags: ["General", "Quiz", "Sample"],
+            icon: "sun.max",
+            color: "greenQuiz",
+            difficulty: .medium,
+            questions: [])
+        
+        do {
+            newQuiz.questions = try Self.mockQuestions()
+        } catch {
+            print(error)
         }
         
-        return nil
+        return newQuiz
     }
 }
 

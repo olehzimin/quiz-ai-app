@@ -29,10 +29,10 @@ struct GameHeader: View {
 }
 
 #Preview {
-    if let quiz = QuizModel.mock {
-        GameService.shared.setGame(with: quiz, timing: .countdown(seconds: 10))
-    }
+    let quiz = QuizModel.mockQuiz()
+    GameService.shared.setGame(with: quiz, timing: .countdown(seconds: 10))
     
-    return GameHeader()
+    return
+    GameHeader()
         .environment(GameService.shared)
 }

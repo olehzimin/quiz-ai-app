@@ -20,10 +20,7 @@ struct QuestionView: View {
             
             LazyVGrid(columns: columns) {
                 ForEach(Array(question.options.enumerated()), id: \.offset) { index, option in
-                    OptionButton(
-                        option: option,
-                        isCorrect: index == question.answerIndex
-                    )
+                    OptionButton(option: option)
                 }
             }
             .padding(.vertical)
@@ -32,10 +29,12 @@ struct QuestionView: View {
 }
 
 #Preview {
-    guard let quiz = QuizModel.mock, let question = quiz.questions.first else {
+    let quiz = QuizModel.mockQuiz()
+    GameService.shared.setGame(with: quiz, timing: .unlimited)
+    
+    guard let question = quiz.questions.first else {
         return ProgressView()
     }
-    GameService.shared.setGame(with: quiz, timing: .unlimited)
     
     return QuestionView(question: question)
         .environment(GameService.shared)
@@ -60,25 +59,20 @@ fileprivate struct QuestionCard: View {
 }
 
 fileprivate struct OptionButton: View {
-    let option: String
-    let isCorrect: Bool
-    
-    init(option: String, isCorrect: Bool) {
-        self.option = option
-        self.isCorrect = isCorrect
-    }
+    let option: QuestionOption
     
     @State private var buttonState: ButtonState = .neutral
     @State private var isTapped: Bool = false
     
     @Environment(GameService.self) private var gameService
     
+    // Rewrite with new QuestionOption type
     var body: some View {
         Button {
 //            isTapped = true
-            gameService.answer(with: option, isCorrect: isCorrect)
+            gameService.answer(with: option.text, isCorrect: option.isCorrect)
             gameService.isQuestionAnswered = true
-            if !isCorrect {
+            if !option.isCorrect {
                 buttonState = .wrong
             }
         } label: {
@@ -86,7 +80,7 @@ fileprivate struct OptionButton: View {
                 RoundedRectangle(cornerRadius: 20)
                     .foregroundStyle(buttonState.color)
                 
-                Text(option)
+                Text(option.text)
             }
             .frame(height: 80)
         }
@@ -109,7 +103,7 @@ fileprivate struct OptionButton: View {
         
         
         
-        if gameService.isQuestionAnswered && isCorrect {
+        if gameService.isQuestionAnswered && option.isCorrect {
             buttonState = .correct
 //            gameService.currentQuestion.isCompleted = true
         } else if !gameService.isQuestionAnswered {

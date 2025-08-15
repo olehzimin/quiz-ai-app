@@ -3,108 +3,98 @@
         "type": "flashcard",
         "question": "What is the powerhouse of the cell?",
         "options": [
-            "Repeat",
-            "Know"
+            { "text": "repeat", "isCorrect": false },
+            { "text": "know", "isCorrect": true }
         ],
-        "answerIndex": 1,
         "explanation": "Mitochondria produce the energy needed by the cell."
     },
     {
         "type": "trueFalse",
         "question": "The Great Wall of China is visible from the Moon.",
         "options": [
-            "False",
-            "True"
+            { "text": "false", "isCorrect": true },
+            { "text": "true", "isCorrect": false }
         ],
-        "answerIndex": 0,
         "explanation": "This is a myth; it is not visible from the Moon with the naked eye."
     },
     {
         "type": "multichoice",
         "question": "What is the capital of France?",
         "options": [
-            "Berlin",
-            "Madrid",
-            "Paris",
-            "Lisbon"
+            { "text": "Berlin", "isCorrect": false },
+            { "text": "Madrid", "isCorrect": false },
+            { "text": "Paris", "isCorrect": true },
+            { "text": "Lisbon", "isCorrect": false }
         ],
-        "answerIndex": 2,
         "explanation": "Paris is the capital of France."
     },
     {
         "type": "flashcard",
         "question": "What is the chemical symbol for gold?",
         "options": [
-            "Repeat",
-            "Know"
+            { "text": "repeat", "isCorrect": false },
+            { "text": "know", "isCorrect": true }
         ],
-        "answerIndex": 1,
         "explanation": "The symbol for gold is Au."
     },
     {
         "type": "trueFalse",
         "question": "Light travels faster than sound.",
         "options": [
-            "False",
-            "True"
+            { "text": "false", "isCorrect": false },
+            { "text": "true", "isCorrect": true }
         ],
-        "answerIndex": 1,
         "explanation": "Light travels at 299,792 km/s, much faster than sound (343 m/s)."
     },
     {
         "type": "multichoice",
         "question": "Which planet is known as the Red Planet?",
         "options": [
-            "Earth",
-            "Mars",
-            "Jupiter",
-            "Venus"
+            { "text": "Earth", "isCorrect": false },
+            { "text": "Mars", "isCorrect": true },
+            { "text": "Jupiter", "isCorrect": false },
+            { "text": "Venus", "isCorrect": false }
         ],
-        "answerIndex": 1,
         "explanation": "Mars appears red due to iron oxide on its surface."
     },
     {
         "type": "multichoice",
         "question": "How many continents are there on Earth?",
         "options": [
-            "5",
-            "6",
-            "7",
-            "8"
+            { "text": "5", "isCorrect": false },
+            { "text": "6", "isCorrect": false },
+            { "text": "7", "isCorrect": true },
+            { "text": "8", "isCorrect": false }
         ],
-        "answerIndex": 2,
         "explanation": "There are 7 continents: Asia, Africa, North America, South America, Antarctica, Europe, and Australia."
     },
     {
         "type": "flashcard",
         "question": "What gas do plants absorb from the atmosphere?",
         "options": [
-            "Repeat",
-            "Know"
+            { "text": "repeat", "isCorrect": false },
+            { "text": "know", "isCorrect": true }
         ],
-        "answerIndex": 1,
         "explanation": "Plants absorb carbon dioxide for photosynthesis."
     },
     {
         "type": "trueFalse",
         "question": "The Pacific Ocean is the largest ocean on Earth.",
         "options": [
-            "False",
-            "True"
+            { "text": "false", "isCorrect": false },
+            { "text": "true", "isCorrect": true }
         ],
-        "answerIndex": 1,
         "explanation": "The Pacific Ocean covers more area than all the land masses combined."
     },
     {
         "type": "multichoice",
         "question": "Who wrote the play 'Romeo and Juliet'?",
         "options": [
-            "Charles Dickens",
-            "William Shakespeare",
-            "Jane Austen",
-            "Leo Tolstoy"
+            { "text": "Charles Dickens", "isCorrect": false },
+            { "text": "William Shakespeare", "isCorrect": true },
+            { "text": "Jane Austen", "isCorrect": false },
+            { "text": "Leo Tolstoy", "isCorrect": false }
         ],
-        "answerIndex": 1,
         "explanation": "William Shakespeare wrote the tragic play 'Romeo and Juliet'."
     }
 ]

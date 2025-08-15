@@ -63,8 +63,9 @@ struct QuizRowView: View {
 }
 
 #Preview {
-    if let quiz = QuizModel.mock {
-        QuizRowView(quiz: quiz)
-            .padding()
-    }
+    let quiz = QuizModel.mockQuiz()
+    
+    return
+    QuizRowView(quiz: quiz)
+        .padding()
 }

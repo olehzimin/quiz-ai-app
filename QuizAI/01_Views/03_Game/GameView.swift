@@ -88,10 +88,11 @@ struct GameView: View {
 }
 
 #Preview {
-    guard let quiz = QuizModel.mock else { return ProgressView() }
+    let quiz = QuizModel.mockQuiz()
     GameService.shared.setGame(with: quiz, timing: .countdown(seconds: 10))
     
-    return GameView(path: .constant(NavigationPath()))
+    return
+    GameView(path: .constant(NavigationPath()))
         .environment(GameService.shared)
 }
 

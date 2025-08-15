@@ -133,12 +133,6 @@ struct StartSheet: View {
     }
 }
 
-#Preview {
-    if let quiz = QuizModel.mock {
-        StartSheet(quiz: quiz, path: .constant(NavigationPath()))
-    }
-}
-
 extension StartSheet {
     private var headerView: some View {
         VStack(spacing: 8) {
@@ -214,4 +208,12 @@ extension StartSheet {
         .foregroundStyle(.black)
         
     }
+}
+
+// MARK: Preview
+#Preview {
+    let quiz = QuizModel.mockQuiz()
+    
+    return
+    StartSheet(quiz: quiz, path: .constant(NavigationPath()))
 }

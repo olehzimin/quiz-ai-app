@@ -8,23 +8,18 @@
 import Foundation
 import SwiftData
 
-enum QuestionType: String, Codable {
-    case flashcard, multichoice, trueFalse
-}
-
 struct QuestionModel: Identifiable {
     var id: UUID = UUID()
     var type: QuestionType
     var question: String
-    var options: [String]
-    var answerIndex: Int
+    var options: [QuestionOption]
     var explanation: String
     var isCompleted: Bool
 }
 
 extension QuestionModel: Codable {
     enum CodingKeys: String, CodingKey {
-        case type, question, options, answerIndex, explanation, isCompleted
+        case type, question, options, explanation, isCompleted
     }
     
     init(from decoder: any Decoder) throws {
@@ -32,8 +27,7 @@ extension QuestionModel: Codable {
         
         let type = try container.decode(QuestionType.self, forKey: .type)
         let question = try container.decode(String.self, forKey: .question)
-        let options = try container.decode([String].self, forKey: .options)
-        let answerIndex = try container.decode(Int.self, forKey: .answerIndex)
+        let options = try container.decode([QuestionOption].self, forKey: .options)
         let explanation = try container.decode(String.self, forKey: .explanation)
         let isCompleted: Bool = (try? container.decode(Bool.self, forKey: .isCompleted)) ?? false
         
@@ -41,9 +35,17 @@ extension QuestionModel: Codable {
             type: type,
             question: question,
             options: options,
-            answerIndex: answerIndex,
             explanation: explanation,
             isCompleted: isCompleted
         )
     }
+}
+
+enum QuestionType: String, Codable {
+    case flashcard, multichoice, trueFalse
+}
+
+struct QuestionOption: Codable {
+    var text: String
+    var isCorrect: Bool
 }

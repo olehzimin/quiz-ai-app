@@ -73,18 +73,10 @@ struct HomeView: View {
     }
 }
 
+// MARK: Preview
 #Preview {
     NavigationStack {
         HomeView(path: .constant(NavigationPath()))
     }
     .modelContainer(for: QuizModel.self, inMemory: true)
-}
-
-extension HomeView {
-    func loadQuizes() {
-        if let quiz = QuizModel.mock {
-            print("inserted")
-            modelContext.insert(quiz)
-        }
-    }
 }
