@@ -10,14 +10,16 @@ import Foundation
 @Observable
 class QuizService {
     static let shared: QuizService = QuizService()
+    
     private init() { }
     
     private var cachedQuiz: QuizModel? = nil
-    private(set) var isGenerating: Bool = false
+    private(set) var generationPhase: QuizGenerationPhase = .idle
+    private(set) var alertMessage: String? = nil
     
     func generateQuiz(name: String, set: String? = nil, tags: [String], icon: String, color: String,
                       difficulty: QuizDifficulty, detailedTopic: String, questionsCount: Int, types: [QuestionType]) {
-        isGenerating = true
+        generationPhase = .generating
         
         let topic = [name, detailedTopic].joined(separator: ". ")
         
@@ -39,25 +41,40 @@ class QuizService {
                     difficulty: difficulty,
                     questions: questions
                 )
-                
-                isGenerating = false
-                print(questions)
+            } catch let error as OpenAIResponseError {
+                alertMessage = error.localizedDescription
+                print(error)
+            } catch let error as URLError where error.code == .timedOut {
+                alertMessage = "The request took too long. Please check your connection and try again."
+                print(error)
+            } catch let error as URLError where error.code == .badServerResponse {
+                alertMessage = "Invalid server response. Please try again."
+                print(error)
             } catch {
+                alertMessage = error.localizedDescription
                 print(error)
             }
+            
+            generationPhase = .finished
         }
     }
     
     func getLastGeneratedQuiz() throws -> QuizModel {
-        if let newQuiz = cachedQuiz {
-            cachedQuiz = nil
-            return newQuiz
-        } else {
-            throw QuizManagerError.emptyCache
-        }
+        guard let newQuiz = cachedQuiz else { throw QuizManagerError.emptyCache }
+        
+        cachedQuiz = nil
+        generationPhase = .idle
+        
+        return newQuiz
     }
 }
 
 enum QuizManagerError: Error {
     case emptyCache
+}
+
+enum QuizGenerationPhase {
+    case idle
+    case generating
+    case finished
 }

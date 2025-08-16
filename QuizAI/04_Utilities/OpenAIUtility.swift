@@ -73,7 +73,6 @@ struct OpenAIUtility {
     static private func handleContentStatus(_ status: ContentStatus) throws {
         switch status {
         case .ok:
-            print(status.message)
             return
         default:
             throw OpenAIResponseError.badStatus(message: status.message)
@@ -199,7 +198,7 @@ enum OpenAIResponseError: Error, LocalizedError {
     case encodingFailed
     case badStatus(message: String)
     
-    private var errorDescription: String {
+    var errorDescription: String? {
         switch self {
         case .missingContent:
             "The server response is missing the expected message content."

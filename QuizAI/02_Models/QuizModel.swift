@@ -8,10 +8,6 @@
 import SwiftUI
 import SwiftData
 
-enum QuizDifficulty: String, Codable, CaseIterable {
-    case easy, medium, hard
-}
-
 @Model
 final class QuizModel: Identifiable {
     var id: UUID
@@ -23,7 +19,7 @@ final class QuizModel: Identifiable {
     var difficulty: QuizDifficulty
     var questions: [QuestionModel]
     
-    // Cached properties, must be updated whenever questions changed
+    // Cached properties, must be updated whenever questions change
     private(set) var questionsCount: Int = 0
     private(set) var questionsTypeCounts: [QuestionType: Int] = [:]
     private(set) var completedQuestionsCount: Int = 0
@@ -112,4 +108,6 @@ extension QuizModel {
     }
 }
 
-
+enum QuizDifficulty: String, Codable, CaseIterable {
+    case easy, medium, hard
+}

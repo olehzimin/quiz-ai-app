@@ -9,15 +9,17 @@ import SwiftUI
 import SwiftData
 
 struct HomeView: View {
-    @Environment(\.modelContext) var modelContext
+    @Binding var path: NavigationPath
+    
     @Query(sort: \QuizModel.name) var quizes: [QuizModel]
     
-    @State private var quizManager = QuizService.shared
-    @State private var showMessage: Bool = false
-    
-    @Binding var path: NavigationPath
     @State private var selectedQuiz: QuizModel? = nil
+    @State private var quizService = QuizService.shared
+    @State private var showsAlert: Bool = false
     
+    @Environment(\.modelContext) var modelContext
+    
+    // MARK: Body
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
             ScrollView {
@@ -53,17 +55,26 @@ struct HomeView: View {
         }
         .navigationTitle("Challenge yourself")
         .toolbar {
-            if quizManager.isGenerating {
+            if quizService.generationPhase == .generating {
                 HStack {
                     Text("Generating")
                     ProgressView()
                 }
             }
         }
-        .onChange(of: quizManager.isGenerating) { oldValue, newValue in
-            if newValue == false {
+        .alert("No quiz was created!", isPresented: $showsAlert) {
+            Button("OK") { }
+        } message: {
+            Text(quizService.alertMessage ?? "")
+        }
+        .onChange(of: quizService.generationPhase) { oldValue, newValue in
+            if newValue == .finished {
+                if quizService.alertMessage != nil {
+                    showsAlert = true
+                }
+                
                 do {
-                    let newQuiz = try quizManager.getLastGeneratedQuiz()
+                    let newQuiz = try quizService.getLastGeneratedQuiz()
                     modelContext.insert(newQuiz)
                 } catch {
                     print(error)
