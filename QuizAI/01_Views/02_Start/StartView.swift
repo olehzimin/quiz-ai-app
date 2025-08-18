@@ -197,7 +197,8 @@ extension StartView {
             .foregroundStyle(.red)
             
             Button {
-                
+                dismiss()
+                path.append("editView")
             } label: {
                 Image(systemName: "pencil")
             }

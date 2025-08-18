@@ -12,11 +12,10 @@ struct HomeView: View {
     @Binding var path: NavigationPath
     
     @Query(sort: \QuizModel.name) var quizes: [QuizModel]
-    
     @Environment(\.modelContext) var modelContext
     
-    @State private var selectedQuiz: QuizModel? = nil
     @State private var quizService = QuizService.shared
+    @State private var selectedQuiz: QuizModel? = nil
     @State private var showsAlert: Bool = false
     
     // MARK: Body
@@ -45,15 +44,17 @@ struct HomeView: View {
             .frame(maxWidth: .infinity, alignment: .trailing)
             .padding()
         }
+        .navigationTitle("Challenge yourself")
         .navigationDestination(for: QuizModel.self) { quiz in
             GameView(path: $path)
         }
         .navigationDestination(for: String.self) { value in
             if value == "addView" {
                 AddView()
+            } else if value == "editView" {
+                EditView()
             }
         }
-        .navigationTitle("Challenge yourself")
         .toolbar {
             if quizService.generationPhase == .generating {
                 HStack {
@@ -71,6 +72,7 @@ struct HomeView: View {
             if newValue == .finished {
                 if quizService.alertMessage != nil {
                     showsAlert = true
+                    return
                 }
                 
                 do {

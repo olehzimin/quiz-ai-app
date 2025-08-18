@@ -94,7 +94,7 @@ struct AddView: View {
         }
         .toolbar {
             Button("Generate") {
-                quizService.generateQuiz(topic: topic, tags: ["General", "Quiz", "Sample"], icon: icon,
+                quizService.generateQuiz(name: topic, tags: ["General", "Quiz", "Sample"], icon: icon,
                                          color: "greenQuiz", difficulty: difficulty, detailedTopic: detailedTopic,
                                          questionsCount: questionsCount, types: types())
                 dismiss()

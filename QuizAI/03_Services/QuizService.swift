@@ -17,11 +17,11 @@ class QuizService {
     private(set) var generationPhase: QuizGenerationPhase = .idle
     private(set) var alertMessage: String? = nil
     
-    func generateQuiz(topic: String, set: String? = nil, tags: [String], icon: String, color: String,
+    func generateQuiz(name: String, set: String? = nil, tags: [String], icon: String, color: String,
                       difficulty: QuizDifficulty, detailedTopic: String, questionsCount: Int, types: [QuestionType]) {
         generationPhase = .generating
         
-        let topic = [topic, detailedTopic].joined(separator: ". ")
+        let topic = [name, detailedTopic].joined(separator: ". ")
         
         Task {
             do {
@@ -33,7 +33,7 @@ class QuizService {
                 )
                 
                 cachedQuiz = QuizModel(
-                    name: topic,
+                    name: name,
                     set: set,
                     tags: tags,
                     icon: icon,
