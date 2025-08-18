@@ -1,5 +1,5 @@
 //
-//  StartSheet.swift
+//  StartView.swift
 //  QuizAI
 //
 //  Created by Oleh Zimin on 13.06.2025.
@@ -7,9 +7,13 @@
 
 import SwiftUI
 
-struct StartSheet: View {
+struct StartView: View {
     var quiz: QuizModel
     @Binding var path: NavigationPath
+    
+    @Environment(GameService.self) private var gameService
+    @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
     
     @State private var isMultichoiceEnabled: Bool = true
     @State private var isFlashcardEnabled: Bool = true
@@ -18,10 +22,6 @@ struct StartSheet: View {
     @State private var isTimerEnabled: Bool = false
     @State private var timerMinutes: Int = 0
     @State private var timerSeconds: Int = 20
-    
-    @Environment(GameService.self) private var gameService
-    @Environment(\.modelContext) private var modelContext
-    @Environment(\.dismiss) private var dismiss
     
     // MARK: Computed
     var chosenTasks: Int {
@@ -133,7 +133,7 @@ struct StartSheet: View {
     }
 }
 
-extension StartSheet {
+extension StartView {
     private var headerView: some View {
         VStack(spacing: 8) {
             HStack(alignment: .top) {
@@ -215,5 +215,5 @@ extension StartSheet {
     let quiz = QuizModel.mockQuiz()
     
     return
-    StartSheet(quiz: quiz, path: .constant(NavigationPath()))
+    StartView(quiz: quiz, path: .constant(NavigationPath()))
 }

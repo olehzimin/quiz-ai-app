@@ -13,11 +13,11 @@ struct HomeView: View {
     
     @Query(sort: \QuizModel.name) var quizes: [QuizModel]
     
+    @Environment(\.modelContext) var modelContext
+    
     @State private var selectedQuiz: QuizModel? = nil
     @State private var quizService = QuizService.shared
     @State private var showsAlert: Bool = false
-    
-    @Environment(\.modelContext) var modelContext
     
     // MARK: Body
     var body: some View {
@@ -34,12 +34,12 @@ struct HomeView: View {
                 .padding()
             }
             .sheet(item: $selectedQuiz) { quiz in
-                StartSheet(quiz: quiz, path: $path)
+                StartView(quiz: quiz, path: $path)
                     .presentationDetents([.large])
                     .presentationDragIndicator(.visible)
             }
             
-            AddButtonView {
+            AddButton {
                 path.append("addView")
             }
             .frame(maxWidth: .infinity, alignment: .trailing)
@@ -50,7 +50,7 @@ struct HomeView: View {
         }
         .navigationDestination(for: String.self) { value in
             if value == "addView" {
-                AddForm(editMode: false)
+                AddView()
             }
         }
         .navigationTitle("Challenge yourself")

@@ -1,5 +1,5 @@
 //
-//  AddButtonView.swift
+//  AddButton.swift
 //  QuizAI
 //
 //  Created by Oleh Zimin on 13.06.2025.
@@ -16,7 +16,7 @@ struct PressableButtonStyle: ButtonStyle {
     }
 }
 
-struct AddButtonView: View {
+struct AddButton: View {
     let action: () -> Void
     
     init(action: @escaping () -> Void) {
@@ -41,7 +41,7 @@ struct AddButtonView: View {
 }
 
 #Preview {
-    AddButtonView {
+    AddButton {
         
     }
 }

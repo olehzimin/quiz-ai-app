@@ -1,5 +1,5 @@
 //
-//  AddForm.swift
+//  AddView.swift
 //  QuizAI
 //
 //  Created by Oleh Zimin on 15.06.2025.
@@ -7,42 +7,43 @@
 
 import SwiftUI
 
-struct AddForm: View {
+struct AddView: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) private var dismiss
     
-    let editMode: Bool
+    @State private var quizService = QuizService.shared
     
-    @State private var name: String = ""
+    @State private var topic: String = ""
     @State private var icon: String = ""
     
-    @State private var optionalTopicPreferences: Bool = false
+    @State private var isDetailedTopicEnabled: Bool = false
     @State private var detailedTopic: String = ""
-    private let symbolsLimit = 100
     
     @State private var questionsCount: Int = 5
     @State private var difficulty = QuizDifficulty.medium
     
-    @State private var multichoiceOption: Bool = true
-    @State private var flashcardOption: Bool = true
-    @State private var trueFalseOption: Bool = true
+    @State private var isMultichoiceEnabled: Bool = true
+    @State private var isFlashcardEnabled: Bool = true
+    @State private var isTrueFalseEnabled: Bool = true
     
-    @State private var quizManager = QuizService.shared
+    private let symbolsLimit: Int = 100
+    private let counts: [Int] = Array(stride(from: 5, through: 50, by: 5))
     
+    // MARK: Body
     var body: some View {
         ZStack(alignment: .bottom) {
             Form {
                 Section("General") {
-                    TextField("Name", text: $name)
+                    TextField("Topic", text: $topic)
                     TextField("Icon", text: $icon)
                     Text("SET - future implementation")
                     Text("TAGS - future implementation")
                 }
                 
                 Section {
-                    Toggle("Optional topic preferences", isOn: $optionalTopicPreferences)
+                    Toggle("Deatiled topic preferences", isOn: $isDetailedTopicEnabled)
                     
-                    if optionalTopicPreferences {
+                    if isDetailedTopicEnabled {
                         TextField("Additional info about topic", text: $detailedTopic, axis: .vertical)
                             .lineLimit(3)
                             .onChange(of: detailedTopic) { oldValue, newValue in
@@ -55,7 +56,7 @@ struct AddForm: View {
                     HStack {
                         Spacer()
                         Text("\(detailedTopic.count)/\(symbolsLimit)")
-                            .opacity(optionalTopicPreferences ? 1 : 0)
+                            .opacity(isDetailedTopicEnabled ? 1 : 0)
                     }
                 }
                 
@@ -64,14 +65,11 @@ struct AddForm: View {
                         VStack {
                             Text("Count")
                             Picker("Questions count", selection: $questionsCount) {
-                                ForEach(5..<101) { number in
-                                    if number % 5 == 0 {
-                                        Text("\(number)").tag(number)
-                                    }
+                                ForEach(counts, id: \.self) { count in
+                                    Text("\(count)").tag(count)
                                 }
                             }
                             .pickerStyle(.wheel)
-                            .frame(height: 100)
                         }
                         
                         VStack {
@@ -82,56 +80,54 @@ struct AddForm: View {
                                 }
                             }
                             .pickerStyle(.wheel)
-                            .frame(height: 100)
                         }
                     }
+                    .frame(height: 100)
                     
-                    Toggle("Multichoice", isOn: $multichoiceOption).disabled(!flashcardOption && !trueFalseOption)
-                    Toggle("Flashcard", isOn: $flashcardOption).disabled(!multichoiceOption && !trueFalseOption)
-                    Toggle("True / False", isOn: $trueFalseOption).disabled(!multichoiceOption && !flashcardOption)
+                    Toggle("Multichoice", isOn: $isMultichoiceEnabled).disabled(!isFlashcardEnabled && !isTrueFalseEnabled)
+                    Toggle("Flashcard", isOn: $isFlashcardEnabled).disabled(!isMultichoiceEnabled && !isTrueFalseEnabled)
+                    Toggle("True / False", isOn: $isTrueFalseEnabled).disabled(!isMultichoiceEnabled && !isFlashcardEnabled)
                 }
                 
             }
             .scrollIndicators(.hidden)
-            .submitLabel(.done)
         }
         .toolbar {
-            Button(editMode ? "Save" : "Generate") {
-                quizManager.generateQuiz(name: name, tags: ["General", "Quiz", "Sample"], icon: icon, color: "greenQuiz",
-                                         difficulty: difficulty, detailedTopic: detailedTopic, questionsCount: questionsCount, types: types)
+            Button("Generate") {
+                quizService.generateQuiz(topic: topic, tags: ["General", "Quiz", "Sample"], icon: icon,
+                                         color: "greenQuiz", difficulty: difficulty, detailedTopic: detailedTopic,
+                                         questionsCount: questionsCount, types: types())
                 dismiss()
             }
             .disabled(!isValid)
         }
-        .navigationTitle(editMode ? "Edit Quiz" : "Add Quiz")
+        .navigationTitle("Add Quiz")
         .scrollDismissesKeyboard(.immediately)
+        .submitLabel(.done)
     }
 }
 
-#Preview {
-    NavigationStack {
-        AddForm(editMode: false)
-    }
-}
-
-extension AddForm {
+extension AddView {
+    // MARK: Computed
     private var isValid: Bool {
-        var result = false
-        
-        if !name.isEmpty && !icon.isEmpty {
-            result = true
-        }
-            
-        return result
+        !topic.isEmpty && !icon.isEmpty
     }
     
-    private var types: [QuestionType] {
+    // MARK: Methods
+    private func types() -> [QuestionType] {
         var result: [QuestionType] = []
         
-        if multichoiceOption { result.append(.multichoice) }
-        if flashcardOption { result.append(.flashcard) }
-        if trueFalseOption { result.append(.trueFalse) }
+        if isMultichoiceEnabled { result.append(.multichoice) }
+        if isFlashcardEnabled { result.append(.flashcard) }
+        if isTrueFalseEnabled { result.append(.trueFalse) }
         
         return result
+    }
+}
+
+// MARK: Preview
+#Preview {
+    NavigationStack {
+        AddView()
     }
 }
