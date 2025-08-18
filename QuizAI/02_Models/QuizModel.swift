@@ -49,7 +49,7 @@ extension QuizModel {
         updateCache()
     }
     
-    func updateCache() {
+    private func updateCache() {
         updateQuestionsCount()
         updateQuestionsTypeCounts()
         updateCompletedQuestionsCount()

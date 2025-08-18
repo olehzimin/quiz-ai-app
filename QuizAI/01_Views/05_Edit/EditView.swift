@@ -18,6 +18,9 @@ struct EditView: View {
     @State private var topic: String = ""
     @State private var icon: String = ""
     
+    @State private var isChangeQuestionsEnabled: Bool = false
+    @State private var changeMode: ChangeMode = .add
+    
     @State private var isDetailedTopicEnabled: Bool = false
     @State private var detailedTopic: String = ""
     
@@ -35,67 +38,85 @@ struct EditView: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             Form {
-                Section("General") {
+                Section {
                     TextField("Topic", text: $topic)
                     TextField("Icon", text: $icon)
                     Text("SET - future implementation")
                     Text("TAGS - future implementation")
-                }
-                
-                Section {
-                    Toggle("Deatiled topic preferences", isOn: $isDetailedTopicEnabled)
+                    Toggle("Change questions", isOn: $isChangeQuestionsEnabled)
                     
-                    if isDetailedTopicEnabled {
-                        TextField("Additional info about topic", text: $detailedTopic, axis: .vertical)
-                            .lineLimit(3)
-                            .onChange(of: detailedTopic) { oldValue, newValue in
-                                if newValue.count > symbolsLimit {
-                                    detailedTopic = oldValue
-                                }
+                    if isChangeQuestionsEnabled {
+                        Picker("Mode", selection: $changeMode) {
+                            ForEach(ChangeMode.allCases, id: \.self) { mode in
+                                Text(mode.description).tag(mode)
                             }
+                        }
                     }
+                } header: {
+                    Text("General")
                 } footer: {
                     HStack {
                         Spacer()
-                        Text("\(detailedTopic.count)/\(symbolsLimit)")
-                            .opacity(isDetailedTopicEnabled ? 1 : 0)
+                        Text("All questions will be regenerated!")
+                            .opacity((changeMode == .regen) ? 1 : 0)
                     }
                 }
                 
-                Section("Questions") {
-                    HStack {
-                        VStack {
-                            Text("Count")
-                            Picker("Questions count", selection: $questionsCount) {
-                                ForEach(counts, id: \.self) { count in
-                                    Text("\(count)").tag(count)
-                                }
-                            }
-                            .pickerStyle(.wheel)
-                        }
+                if isChangeQuestionsEnabled {
+                    Section {
+                        Toggle("Deatiled topic preferences", isOn: $isDetailedTopicEnabled)
                         
-                        VStack {
-                            Text("Difficulty")
-                            Picker("Difficulty", selection: $difficulty) {
-                                ForEach(QuizDifficulty.allCases, id: \.self) { option in
-                                    Text(option.rawValue.capitalized)
+                        if isDetailedTopicEnabled {
+                            TextField("Additional info about topic", text: $detailedTopic, axis: .vertical)
+                                .lineLimit(3)
+                                .onChange(of: detailedTopic) { oldValue, newValue in
+                                    if newValue.count > symbolsLimit {
+                                        detailedTopic = oldValue
+                                    }
                                 }
-                            }
-                            .pickerStyle(.wheel)
+                        }
+                    } footer: {
+                        HStack {
+                            Spacer()
+                            Text("\(detailedTopic.count)/\(symbolsLimit)")
+                                .opacity(isDetailedTopicEnabled ? 1 : 0)
                         }
                     }
-                    .frame(height: 100)
                     
-                    Toggle("Multichoice", isOn: $isMultichoiceEnabled).disabled(!isFlashcardEnabled && !isTrueFalseEnabled)
-                    Toggle("Flashcard", isOn: $isFlashcardEnabled).disabled(!isMultichoiceEnabled && !isTrueFalseEnabled)
-                    Toggle("True / False", isOn: $isTrueFalseEnabled).disabled(!isMultichoiceEnabled && !isFlashcardEnabled)
+                    Section("Questions") {
+                        HStack {
+                            VStack {
+                                Text("Count")
+                                Picker("Questions count", selection: $questionsCount) {
+                                    ForEach(counts, id: \.self) { count in
+                                        Text("\(count)").tag(count)
+                                    }
+                                }
+                                .pickerStyle(.wheel)
+                            }
+                            
+                            VStack {
+                                Text("Difficulty")
+                                Picker("Difficulty", selection: $difficulty) {
+                                    ForEach(QuizDifficulty.allCases, id: \.self) { option in
+                                        Text(option.rawValue.capitalized)
+                                    }
+                                }
+                                .pickerStyle(.wheel)
+                            }
+                        }
+                        .frame(height: 100)
+                        
+                        Toggle("Multichoice", isOn: $isMultichoiceEnabled).disabled(!isFlashcardEnabled && !isTrueFalseEnabled)
+                        Toggle("Flashcard", isOn: $isFlashcardEnabled).disabled(!isMultichoiceEnabled && !isTrueFalseEnabled)
+                        Toggle("True / False", isOn: $isTrueFalseEnabled).disabled(!isMultichoiceEnabled && !isFlashcardEnabled)
+                    }
                 }
-                
             }
             .scrollIndicators(.hidden)
         }
         .toolbar {
-            Button("Save") {
+            Button(isChangeQuestionsEnabled ? "Regenerate" : "Save") {
                 quizService.generateQuiz(name: topic, tags: ["General", "Quiz", "Sample"], icon: icon,
                                          color: "greenQuiz", difficulty: difficulty, detailedTopic: detailedTopic,
                                          questionsCount: questionsCount, types: types())
@@ -124,6 +145,19 @@ extension EditView {
         if isTrueFalseEnabled { result.append(.trueFalse) }
         
         return result
+    }
+}
+
+enum ChangeMode: CaseIterable, CustomStringConvertible {
+    case add, regen
+    
+    var description: String {
+        switch self {
+        case .add:
+            "add new"
+        case .regen:
+            "regenerate all"
+        }
     }
 }
 

@@ -93,8 +93,7 @@ final class GameService {
     }
     
     func finishGame() {
-        self.quiz?.questions = self.questions
-        quiz?.updateCache()
+        self.quiz?.resetQuestions(with: questions)
         
         print("game finished")
     }
