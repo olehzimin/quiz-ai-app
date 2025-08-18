@@ -26,6 +26,7 @@ struct HomeView: View {
                     ForEach(quizes, id: \.self) { quiz in
                         QuizRowView(quiz: quiz)
                             .onTapGesture {
+                                guard quiz.isReady else { return }
                                 selectedQuiz = quiz
                             }
                     }
@@ -63,13 +64,6 @@ struct HomeView: View {
                 if quizService.alertMessage != nil {
                     showsAlert = true
                     return
-                }
-                
-                do {
-                    let newQuiz = try quizService.getLastGeneratedQuiz()
-                    modelContext.insert(newQuiz)
-                } catch {
-                    print(error)
                 }
             }
         }

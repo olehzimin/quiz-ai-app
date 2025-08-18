@@ -46,19 +46,28 @@ struct QuizRowView: View {
                 
                 Spacer()
                 
-                VStack(alignment: .trailing, spacing: 8) {
-                    Text("\(quiz.completedQuestionsCount)")
-                        .font(.title2).bold()
-                        .foregroundStyle(Color(quiz.color))
-                    
-                    Text("\(quiz.questionsCount)")
-                        .font(.callout)
-                        .foregroundStyle(.gray)
+                if quiz.isReady {
+                    VStack(alignment: .trailing, spacing: 8) {
+                        Text("\(quiz.completedQuestionsCount)")
+                            .font(.title2).bold()
+                            .foregroundStyle(Color(quiz.color))
+                        
+                        Text("\(quiz.questionsCount)")
+                            .font(.callout)
+                            .foregroundStyle(.gray)
+                    }
+                    .padding(.horizontal)
+                } else {
+                    HStack {
+                        ProgressView()
+                            .font(.title2)
+                    }
+                    .padding(.horizontal)
                 }
-                .padding(.horizontal)
             }
         }
         .frame(height: 80)
+        .opacity(quiz.isReady ? 1 : 0.6)
     }
 }
 

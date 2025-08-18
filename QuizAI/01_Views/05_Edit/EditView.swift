@@ -117,9 +117,9 @@ struct EditView: View {
         }
         .toolbar {
             Button(isChangeQuestionsEnabled ? "Regenerate" : "Save") {
-                quizService.generateQuiz(name: topic, tags: ["General", "Quiz", "Sample"], icon: icon,
-                                         color: "greenQuiz", difficulty: difficulty, detailedTopic: detailedTopic,
-                                         questionsCount: questionsCount, types: types())
+//                quizService.createQuiz(name: topic, tags: ["General", "Quiz", "Sample"], icon: icon,
+//                                         color: "greenQuiz", difficulty: difficulty, detailedTopic: detailedTopic,
+//                                         questionsCount: questionsCount, types: types())
                 dismiss()
             }
             .disabled(!isValid)

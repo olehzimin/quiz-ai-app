@@ -39,6 +39,10 @@ final class QuizModel: Identifiable {
 }
 
 extension QuizModel {
+    var isReady: Bool {
+        !questions.isEmpty
+    }
+    
     var completedPercent: Int {
         completedQuestionsCount * 100 / questionsCount
     }
