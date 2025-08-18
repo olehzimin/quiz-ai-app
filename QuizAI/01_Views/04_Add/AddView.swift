@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AddView: View {
-    @Environment(\.modelContext) var modelContext
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     
     @State private var quizService = QuizService.shared

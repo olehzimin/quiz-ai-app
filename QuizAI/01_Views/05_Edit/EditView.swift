@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct EditView: View {
+    let quiz: QuizModel
+    
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) private var dismiss
     
@@ -127,8 +129,11 @@ extension EditView {
 
 // MARK: Preview
 #Preview {
+    let quiz = QuizModel.mockQuiz()
+    
+    return
     NavigationStack {
-        EditView()
+        EditView(quiz: quiz)
     }
 }
 

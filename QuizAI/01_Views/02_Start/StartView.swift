@@ -9,8 +9,8 @@ import SwiftUI
 
 struct StartView: View {
     var quiz: QuizModel
-    @Binding var path: NavigationPath
     
+    @Environment(NavigationService.self) private var navigationService
     @Environment(GameService.self) private var gameService
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
@@ -108,7 +108,7 @@ struct StartView: View {
                     
                     Button {
                         dismiss()
-                        path.append(quiz)
+                        navigationService.path.append(Route.game(quiz: quiz))
                         gameService.setGame(with: quiz, timing: timing)
                     } label: {
                         Text("Start Quiz")
@@ -198,7 +198,7 @@ extension StartView {
             
             Button {
                 dismiss()
-                path.append("editView")
+                navigationService.path.append(Route.edit(quiz: quiz))
             } label: {
                 Image(systemName: "pencil")
             }
@@ -216,5 +216,5 @@ extension StartView {
     let quiz = QuizModel.mockQuiz()
     
     return
-    StartView(quiz: quiz, path: .constant(NavigationPath()))
+    StartView(quiz: quiz)
 }

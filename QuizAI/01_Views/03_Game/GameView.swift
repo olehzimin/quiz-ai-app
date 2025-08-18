@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct GameView: View {
-    @Binding var path: NavigationPath
-    
+    @Environment(NavigationService.self) private var navigationService
     @Environment(GameService.self) var gameService
     @Environment(\.dismiss) var dismiss
     
@@ -45,7 +44,7 @@ struct GameView: View {
                 
                 Button {
                     gameService.finishGame()
-                    path.removeLast()
+                    navigationService.path.removeLast()
                 } label: {
                     ZStack {
                         Capsule()
@@ -65,7 +64,7 @@ struct GameView: View {
             HStack(spacing: 32) {
                 Button {
 //                    quiz.updateCompletedQuestions()
-                    path.removeLast()
+                    navigationService.path.removeLast()
                 } label: {
                     Image(systemName: "xmark")
                 }
@@ -92,7 +91,8 @@ struct GameView: View {
     GameService.shared.setGame(with: quiz, timing: .countdown(seconds: 10))
     
     return
-    GameView(path: .constant(NavigationPath()))
+    GameView()
+        .environment(NavigationService())
         .environment(GameService.shared)
 }
 

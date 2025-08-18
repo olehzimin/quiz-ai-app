@@ -9,10 +9,10 @@ import SwiftUI
 import SwiftData
 
 struct HomeView: View {
-    @Binding var path: NavigationPath
-    
     @Query(sort: \QuizModel.name) var quizes: [QuizModel]
-    @Environment(\.modelContext) var modelContext
+    
+    @Environment(NavigationService.self) private var navigationService
+    @Environment(\.modelContext) private var modelContext
     
     @State private var quizService = QuizService.shared
     @State private var selectedQuiz: QuizModel? = nil
@@ -33,28 +33,18 @@ struct HomeView: View {
                 .padding()
             }
             .sheet(item: $selectedQuiz) { quiz in
-                StartView(quiz: quiz, path: $path)
+                StartView(quiz: quiz)
                     .presentationDetents([.large])
                     .presentationDragIndicator(.visible)
             }
             
             AddButton {
-                path.append("addView")
+                navigationService.path.append(Route.add)
             }
             .frame(maxWidth: .infinity, alignment: .trailing)
             .padding()
         }
         .navigationTitle("Challenge yourself")
-        .navigationDestination(for: QuizModel.self) { quiz in
-            GameView(path: $path)
-        }
-        .navigationDestination(for: String.self) { value in
-            if value == "addView" {
-                AddView()
-            } else if value == "editView" {
-                EditView()
-            }
-        }
         .toolbar {
             if quizService.generationPhase == .generating {
                 HStack {
@@ -89,7 +79,7 @@ struct HomeView: View {
 // MARK: Preview
 #Preview {
     NavigationStack {
-        HomeView(path: .constant(NavigationPath()))
+        HomeView()
     }
     .modelContainer(for: QuizModel.self, inMemory: true)
 }
