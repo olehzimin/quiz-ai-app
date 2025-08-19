@@ -8,7 +8,10 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var navigationService: NavigationService = NavigationService()
+    @Environment(\.modelContext) private var modelContext
+    
+    @State private var navigationService = NavigationService()
+    @State private var quizService = QuizService.shared
     @State private var gameService: GameService = GameService.shared
     
     var body: some View {
@@ -25,8 +28,12 @@ struct ContentView: View {
                     }
                 }
         }
+        .onAppear {
+            quizService.set(modelContext: modelContext)
+        }
         .environment(navigationService)
         .environment(gameService)
+        .environment(quizService)
     }
 }
 

@@ -117,9 +117,25 @@ struct EditView: View {
         }
         .toolbar {
             Button(isChangeQuestionsEnabled ? "Regenerate" : "Save") {
-//                quizService.createQuiz(name: topic, tags: ["General", "Quiz", "Sample"], icon: icon,
-//                                         color: "greenQuiz", difficulty: difficulty, detailedTopic: detailedTopic,
-//                                         questionsCount: questionsCount, types: types())
+                quizService.rewriteQuiz(quiz, name: topic, tags: [],
+                                        icon: icon, color: "greenQuiz")
+                
+                if isChangeQuestionsEnabled {
+                    switch changeMode {
+                    case .add:
+                        quizService.addQuestions(
+                            in: quiz, detailedTopic: detailedTopic,
+                            questionsCount: questionsCount, types: types(),
+                            difficulty: difficulty
+                        )
+                    case .regen:
+                        quizService.regenerateQuestions(
+                            in: quiz, detailedTopic: detailedTopic,
+                            questionsCount: questionsCount, types: types(),
+                            difficulty: difficulty
+                        )
+                    }
+                }
                 dismiss()
             }
             .disabled(!isValid)
@@ -127,6 +143,10 @@ struct EditView: View {
         .navigationTitle("Edit Quiz")
         .scrollDismissesKeyboard(.immediately)
         .submitLabel(.done)
+        .onAppear {
+            topic = quiz.name
+            icon = quiz.icon
+        }
     }
 }
 

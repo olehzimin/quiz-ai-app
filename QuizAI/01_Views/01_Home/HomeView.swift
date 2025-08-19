@@ -26,7 +26,7 @@ struct HomeView: View {
                     ForEach(quizes, id: \.self) { quiz in
                         QuizRowView(quiz: quiz)
                             .onTapGesture {
-                                guard quiz.isReady else { return }
+                                guard quiz.generationPhase == .finished else { return }
                                 selectedQuiz = quiz
                             }
                     }

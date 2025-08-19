@@ -10,6 +10,8 @@ import SwiftData
 
 @Model
 final class QuizModel: Identifiable {
+    var generationPhase: QuizGenerationPhase = QuizGenerationPhase.idle
+    
     var id: UUID
     var name: String
     var set: String?
@@ -39,9 +41,9 @@ final class QuizModel: Identifiable {
 }
 
 extension QuizModel {
-    var isReady: Bool {
-        !questions.isEmpty
-    }
+//    var isReady: Bool {
+//        !questions.isEmpty
+//    }
     
     var completedPercent: Int {
         completedQuestionsCount * 100 / questionsCount

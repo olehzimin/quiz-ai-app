@@ -95,8 +95,8 @@ struct AddView: View {
         .toolbar {
             Button("Generate") {
                 quizService.createQuiz(name: topic, tags: ["General", "Quiz", "Sample"], icon: icon,
-                                         color: "greenQuiz", difficulty: difficulty, detailedTopic: detailedTopic,
-                                       questionsCount: questionsCount, types: types(), using: modelContext)
+                                       color: "greenQuiz", difficulty: difficulty, detailedTopic: detailedTopic,
+                                       questionsCount: questionsCount, types: types())
                 dismiss()
             }
             .disabled(!isValid)

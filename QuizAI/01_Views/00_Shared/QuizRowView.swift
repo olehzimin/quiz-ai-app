@@ -46,7 +46,7 @@ struct QuizRowView: View {
                 
                 Spacer()
                 
-                if quiz.isReady {
+                if quiz.generationPhase == .finished {
                     VStack(alignment: .trailing, spacing: 8) {
                         Text("\(quiz.completedQuestionsCount)")
                             .font(.title2).bold()
@@ -67,7 +67,7 @@ struct QuizRowView: View {
             }
         }
         .frame(height: 80)
-        .opacity(quiz.isReady ? 1 : 0.6)
+        .opacity((quiz.generationPhase == .finished) ? 1 : 0.6)
     }
 }
 
