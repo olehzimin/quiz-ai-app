@@ -92,7 +92,7 @@ struct GameView: View {
     
     return
     GameView()
-        .environment(NavigationService())
+        .environment(NavigationService.shared)
         .environment(GameService.shared)
 }
 

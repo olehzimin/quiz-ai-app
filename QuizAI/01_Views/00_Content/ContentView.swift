@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     
-    @State private var navigationService = NavigationService()
+    @State private var navigationService = NavigationService.shared
     @State private var quizService = QuizService.shared
     @State private var gameService: GameService = GameService.shared
     

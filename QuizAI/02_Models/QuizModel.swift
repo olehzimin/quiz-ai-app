@@ -10,14 +10,14 @@ import SwiftData
 
 @Model
 final class QuizModel: Identifiable {
-    var id: UUID
+    private(set) var id: UUID
     var name: String
     var set: String?
     var tags: [String]
     var icon: String
     var color: String
-    var difficulty: QuizDifficulty
-    var questions: [QuestionModel]
+    private(set) var difficulty: QuizDifficulty
+    private(set) var questions: [QuestionModel]
     
     var generationPhase: GenerationPhase = GenerationPhase.idle
     
@@ -101,7 +101,8 @@ extension QuizModel {
             questions: [])
         
         do {
-            newQuiz.questions = try Self.mockQuestions()
+            let questions = try Self.mockQuestions()
+            newQuiz.resetQuestions(with: questions)
         } catch {
             print(error)
         }

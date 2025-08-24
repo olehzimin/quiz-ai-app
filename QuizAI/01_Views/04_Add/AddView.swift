@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct AddView: View {
-    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     
     @State private var quizService = QuizService.shared
@@ -67,10 +66,10 @@ struct AddView: View {
                             Picker("Questions count", selection: $questionsCount) {
                                 ForEach(counts, id: \.self) { count in
                                     Text("\(count)").tag(count)
-                                        .font(.body)
                                 }
                             }
                             .pickerStyle(.wheel)
+                            .frame(height: 100)
                         }
                         
                         VStack {
@@ -78,13 +77,12 @@ struct AddView: View {
                             Picker("Difficulty", selection: $difficulty) {
                                 ForEach(QuizDifficulty.allCases, id: \.self) { option in
                                     Text(option.rawValue.capitalized)
-                                        .font(.body)
                                 }
                             }
                             .pickerStyle(.wheel)
+                            .frame(height: 100)
                         }
                     }
-                    .frame(height: 100)
                     
                     Toggle("Multichoice", isOn: $isMultichoiceEnabled).disabled(!isFlashcardEnabled && !isTrueFalseEnabled)
                     Toggle("Flashcard", isOn: $isFlashcardEnabled).disabled(!isMultichoiceEnabled && !isTrueFalseEnabled)

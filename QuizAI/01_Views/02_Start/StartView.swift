@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct StartView: View {
-    var quiz: QuizModel
+    let quiz: QuizModel
     
     @Environment(NavigationService.self) private var navigationService
     @Environment(GameService.self) private var gameService
@@ -23,23 +23,8 @@ struct StartView: View {
     @State private var timerMinutes: Int = 0
     @State private var timerSeconds: Int = 20
     
-    // MARK: Computed
-    var chosenTasks: Int {
-        var total: Int = 0
-        
-        if isMultichoiceEnabled { total += quiz.questionsTypeCounts[.multichoice] ?? 0 }
-        if isFlashcardEnabled { total += quiz.questionsTypeCounts[.flashcard] ?? 0 }
-        if isTrueFalseEnabled { total += quiz.questionsTypeCounts[.trueFalse] ?? 0 }
-        
-        return total
-    }
-    
-    var timing: GameTiming {
-        guard isTimerEnabled else { return .unlimited }
-        let total = timerMinutes*60 + timerSeconds
-        
-        return .countdown(seconds: total)
-    }
+    private let minutesRange: [Int] = Array(0...10)
+    private let secondsRange: [Int] = Array(stride(from: 0, through: 50, by: 10))
     
     // MARK: Body
     var body: some View {
@@ -59,24 +44,13 @@ struct StartView: View {
                         if quiz.questionsTypeCounts[.trueFalse] != 0 {
                             Toggle("True / False", isOn: $isTrueFalseEnabled).disabled(!isFlashcardEnabled && !isMultichoiceEnabled)
                         }
-                        
+                    } footer: {
                         Text("Chosen tasks: \(chosenTasks)")
                             .frame(maxWidth: .infinity, alignment: .trailing)
                     }
                     .tint(Color(quiz.color))
                     .onAppear {
-                        for questionTypeCount in quiz.questionsTypeCounts {
-                            switch questionTypeCount {
-                            case (.flashcard, 0):
-                                isFlashcardEnabled = false
-                            case (.multichoice, 0):
-                                isMultichoiceEnabled = false
-                            case (.trueFalse, 0):
-                                isTrueFalseEnabled = false
-                            default:
-                                continue
-                            }
-                        }
+                        disableEmptyTypes()
                     }
                     
                     Section {
@@ -87,16 +61,14 @@ struct StartView: View {
                         if isTimerEnabled {
                             HStack {
                                 Picker("Set minutes", selection: $timerMinutes) {
-                                    ForEach(0..<11) { interval in
+                                    ForEach(minutesRange, id: \.self) { interval in
                                         Text("\(interval) min").tag(interval)
                                     }
                                 }
                                 
                                 Picker("Set seconds", selection: $timerSeconds) {
-                                    ForEach(0..<60) { interval in
-                                        if interval % 10 == 0 {
-                                            Text("\(interval) s").tag(interval)
-                                        }
+                                    ForEach(secondsRange, id: \.self) { interval in
+                                        Text("\(interval) s").tag(interval)
                                     }
                                 }
                             }
@@ -105,11 +77,21 @@ struct StartView: View {
                         }
                         
                     }
+                    .onChange(of: timerMinutes) { _, newValue in
+                        withAnimation {
+                            validateMitutes(newValue)
+                        }
+                    }
+                    .onChange(of: timerSeconds) { _, newValue in
+                        withAnimation {
+                            validateSeconds(newValue)
+                        }
+                    }
                     
                     Button {
                         dismiss()
-                        navigationService.path.append(Route.game(quiz: quiz))
                         gameService.setGame(with: quiz, timing: timing)
+                        navigationService.path.append(Route.game(quiz: quiz))
                     } label: {
                         Text("Start Quiz")
                             .bold()
@@ -134,6 +116,52 @@ struct StartView: View {
 }
 
 extension StartView {
+    // MARK: Computed
+    var chosenTasks: Int {
+        var total: Int = 0
+        
+        if isMultichoiceEnabled { total += quiz.questionsTypeCounts[.multichoice] ?? 0 }
+        if isFlashcardEnabled { total += quiz.questionsTypeCounts[.flashcard] ?? 0 }
+        if isTrueFalseEnabled { total += quiz.questionsTypeCounts[.trueFalse] ?? 0 }
+        
+        return total
+    }
+    
+    var timing: GameTiming {
+        guard isTimerEnabled else { return .unlimited }
+        let total = timerMinutes*60 + timerSeconds
+        
+        return .countdown(seconds: total)
+    }
+    
+    // MARK: Methods
+    private func disableEmptyTypes() {
+        for questionTypeCount in quiz.questionsTypeCounts {
+            switch questionTypeCount {
+            case (.flashcard, 0):
+                isFlashcardEnabled = false
+            case (.multichoice, 0):
+                isMultichoiceEnabled = false
+            case (.trueFalse, 0):
+                isTrueFalseEnabled = false
+            default:
+                continue
+            }
+        }
+    }
+    
+    private func validateMitutes(_ minutes: Int) {
+        if minutes == 0 && timerSeconds == 0 {
+            timerSeconds = secondsRange[1]
+        }
+    }
+    
+    private func validateSeconds(_ seconds: Int) {
+        if seconds == 0 && timerMinutes == 0 {
+            timerMinutes = minutesRange[1]
+        }
+    }
+    
     private var headerView: some View {
         VStack(spacing: 8) {
             HStack(alignment: .top) {
@@ -217,4 +245,6 @@ extension StartView {
     
     return
     StartView(quiz: quiz)
+        .environment(NavigationService.shared)
+        .environment(GameService.shared)
 }
