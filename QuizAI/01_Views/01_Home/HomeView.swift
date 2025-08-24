@@ -12,9 +12,8 @@ struct HomeView: View {
     @Query(sort: \QuizModel.name) var quizes: [QuizModel]
     
     @Environment(NavigationService.self) private var navigationService
-    @Environment(\.modelContext) private var modelContext
+    @Environment(QuizService.self) private var quizService
     
-    @State private var quizService = QuizService.shared
     @State private var selectedQuiz: QuizModel? = nil
     @State private var showsAlert: Bool = false
     
@@ -24,19 +23,15 @@ struct HomeView: View {
             ScrollView {
                 VStack {
                     ForEach(quizes, id: \.self) { quiz in
-                        QuizRowView(quiz: quiz)
-                            .onTapGesture {
-                                guard quiz.generationPhase == .finished else { return }
-                                selectedQuiz = quiz
-                            }
+                        QuizRow(
+                            quiz: quiz,
+                            isEnabled: quiz.generationPhase == .finished
+                        ) {
+                            selectedQuiz = quiz
+                        }
                     }
                 }
                 .padding()
-            }
-            .sheet(item: $selectedQuiz) { quiz in
-                StartView(quiz: quiz)
-                    .presentationDetents([.large])
-                    .presentationDragIndicator(.visible)
             }
             
             AddButton {
@@ -53,6 +48,11 @@ struct HomeView: View {
                     ProgressView()
                 }
             }
+        }
+        .sheet(item: $selectedQuiz) { quiz in
+            StartView(quiz: quiz)
+                .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
         }
         .alert("No quiz was created!", isPresented: $showsAlert) {
             Button("OK") { }

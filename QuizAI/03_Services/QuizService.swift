@@ -9,12 +9,13 @@ import SwiftUI
 import SwiftData
 
 @Observable
-class QuizService {
+final class QuizService {
     static let shared: QuizService = QuizService()
     private init() { }
     
     private var modelContext: ModelContext? = nil
-    private(set) var generationPhase: QuizGenerationPhase = .idle
+    
+    private(set) var generationPhase: GenerationPhase = .idle
     private(set) var alertMessage: String? = nil
     
     func set(modelContext: ModelContext) {
@@ -24,8 +25,6 @@ class QuizService {
     func createQuiz(name: String, set: String? = nil, tags: [String],
                     icon: String, color: String, difficulty: QuizDifficulty,
                     detailedTopic: String, questionsCount: Int, types: [QuestionType]) {
-        alertMessage = nil
-        
         let topic = [name, detailedTopic].joined(separator: ". ")
         let newQuiz = QuizModel(
             name: name,
@@ -40,7 +39,7 @@ class QuizService {
         
         newQuiz.generationPhase = .generating
         Task {
-            if let questions = await generateQuestions(
+            if let questions = await generate(
                 topic: topic,
                 questionsCount: questionsCount,
                 types: types,
@@ -69,7 +68,7 @@ class QuizService {
         
         quiz.generationPhase = .generating
         Task {
-            if let questions = await generateQuestions(
+            if let questions = await generate(
                 topic: topic,
                 questionsCount: questionsCount,
                 types: types,
@@ -88,7 +87,7 @@ class QuizService {
         
         quiz.generationPhase = .generating
         Task {
-            if let newQuestions = await generateQuestions(
+            if let newQuestions = await generate(
                 topic: topic,
                 questionsCount: questionsCount,
                 types: types,
@@ -101,8 +100,9 @@ class QuizService {
         }
     }
     
-    private func generateQuestions(topic: String, questionsCount: Int,
-                                   types: [QuestionType], difficulty: QuizDifficulty) async -> [QuestionModel]? {
+    private func generate(topic: String, questionsCount: Int,
+                          types: [QuestionType], difficulty: QuizDifficulty) async -> [QuestionModel]? {
+        alertMessage = nil
         var questions: [QuestionModel]? = nil
         
         generationPhase = .generating
@@ -140,8 +140,4 @@ enum QuizManagerError: Error {
     case emptyCache
 }
 
-enum QuizGenerationPhase: Codable {
-    case idle
-    case generating
-    case finished
-}
+

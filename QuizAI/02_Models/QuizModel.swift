@@ -10,8 +10,6 @@ import SwiftData
 
 @Model
 final class QuizModel: Identifiable {
-    var generationPhase: QuizGenerationPhase = QuizGenerationPhase.idle
-    
     var id: UUID
     var name: String
     var set: String?
@@ -20,6 +18,8 @@ final class QuizModel: Identifiable {
     var color: String
     var difficulty: QuizDifficulty
     var questions: [QuestionModel]
+    
+    var generationPhase: GenerationPhase = GenerationPhase.idle
     
     // Cached properties, must be updated whenever questions change
     private(set) var questionsCount: Int = 0
@@ -41,17 +41,13 @@ final class QuizModel: Identifiable {
 }
 
 extension QuizModel {
-//    var isReady: Bool {
-//        !questions.isEmpty
-//    }
-    
     var completedPercent: Int {
-        completedQuestionsCount * 100 / questionsCount
+        guard questionsCount > 0 else { return 0 }
+        return (completedQuestionsCount * 100) / questionsCount
     }
     
     func resetQuestions(with newQuestions: [QuestionModel]) {
         questions = newQuestions
-        
         updateCache()
     }
     
@@ -95,7 +91,7 @@ extension QuizModel {
     }
     
     static func mockQuiz() -> QuizModel {
-        var newQuiz = QuizModel(
+        let newQuiz = QuizModel(
             name: "Sample Quiz",
             set: nil,
             tags: ["General", "Quiz", "Sample"],

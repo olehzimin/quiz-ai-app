@@ -1,5 +1,5 @@
 //
-//  QuizRowView.swift
+//  QuizRow.swift
 //  QuizAI
 //
 //  Created by Oleh Zimin on 12.06.2025.
@@ -7,8 +7,10 @@
 
 import SwiftUI
 
-struct QuizRowView: View {
+struct QuizRow: View {
     let quiz: QuizModel
+    var isEnabled: Bool = true
+    var onSelect: (() -> Void)? = nil
     
     var body: some View {
         ZStack {
@@ -46,7 +48,7 @@ struct QuizRowView: View {
                 
                 Spacer()
                 
-                if quiz.generationPhase == .finished {
+                if isEnabled {
                     VStack(alignment: .trailing, spacing: 8) {
                         Text("\(quiz.completedQuestionsCount)")
                             .font(.title2).bold()
@@ -67,7 +69,11 @@ struct QuizRowView: View {
             }
         }
         .frame(height: 80)
-        .opacity((quiz.generationPhase == .finished) ? 1 : 0.6)
+        .opacity(isEnabled ? 1 : 0.6)
+        .onTapGesture {
+            guard isEnabled else { return }
+            onSelect?()
+        }
     }
 }
 
@@ -75,6 +81,6 @@ struct QuizRowView: View {
     let quiz = QuizModel.mockQuiz()
     
     return
-    QuizRowView(quiz: quiz)
+    QuizRow(quiz: quiz)
         .padding()
 }

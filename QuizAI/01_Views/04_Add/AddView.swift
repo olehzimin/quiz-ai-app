@@ -67,6 +67,7 @@ struct AddView: View {
                             Picker("Questions count", selection: $questionsCount) {
                                 ForEach(counts, id: \.self) { count in
                                     Text("\(count)").tag(count)
+                                        .font(.body)
                                 }
                             }
                             .pickerStyle(.wheel)
@@ -77,6 +78,7 @@ struct AddView: View {
                             Picker("Difficulty", selection: $difficulty) {
                                 ForEach(QuizDifficulty.allCases, id: \.self) { option in
                                     Text(option.rawValue.capitalized)
+                                        .font(.body)
                                 }
                             }
                             .pickerStyle(.wheel)

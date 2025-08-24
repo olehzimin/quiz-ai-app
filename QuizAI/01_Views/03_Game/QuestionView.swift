@@ -43,16 +43,23 @@ struct QuestionView: View {
 fileprivate struct QuestionCard: View {
     let question: QuestionModel
     
+    @State private var isFlipped: Bool = false
+    
     var body: some View {
         RoundedRectangle(cornerRadius: 32)
-            .fill(Color.cyan)
+            .fill(isFlipped ? Color.yellow : Color.cyan)
             .overlay {
                 ZStack {
-                    Text(question.question)
+                    Text(isFlipped ? question.explanation : question.question)
                     
                     Text(question.type.rawValue)
                         .padding()
                         .frame(maxHeight: .infinity, alignment: .top)
+                }
+            }
+            .onTapGesture {
+                if question.type == .flashcard {
+                    isFlipped.toggle()
                 }
             }
     }
