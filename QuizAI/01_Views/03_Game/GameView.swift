@@ -88,7 +88,7 @@ struct GameView: View {
 
 #Preview {
     let quiz = QuizModel.mockQuiz()
-    GameService.shared.setGame(with: quiz, timing: .countdown(seconds: 10))
+    GameService.shared.setGame(with: quiz, types: QuestionType.allCases, timing: .countdown(seconds: 10))
     
     return
     GameView()

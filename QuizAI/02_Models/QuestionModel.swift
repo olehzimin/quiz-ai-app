@@ -41,7 +41,7 @@ extension QuestionModel: Codable {
     }
 }
 
-enum QuestionType: String, Codable {
+enum QuestionType: String, Codable, CaseIterable {
     case flashcard, multichoice, trueFalse
 }
 

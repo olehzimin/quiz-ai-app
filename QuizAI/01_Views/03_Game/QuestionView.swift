@@ -30,7 +30,7 @@ struct QuestionView: View {
 
 #Preview {
     let quiz = QuizModel.mockQuiz()
-    GameService.shared.setGame(with: quiz, timing: .unlimited)
+    GameService.shared.setGame(with: quiz, types: QuestionType.allCases, timing: .countdown(seconds: 10))
     
     guard let question = quiz.questions.first else {
         return ProgressView()
@@ -61,6 +61,9 @@ fileprivate struct QuestionCard: View {
                 if question.type == .flashcard {
                     isFlipped.toggle()
                 }
+            }
+            .onChange(of: question.id) { _, _ in
+                isFlipped = false
             }
     }
 }

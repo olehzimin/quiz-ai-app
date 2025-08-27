@@ -12,7 +12,7 @@ struct GameHeader: View {
     
     // MARK: Body
     var body: some View {
-        Text("\(gameService.currentQuestionIndex + 1) / \(gameService.quiz!.questionsCount)")
+        Text("\(gameService.currentQuestionIndex + 1) / \(gameService.questions.count)")
         
         if gameService.timing.isTimed {
             Text("\(gameService.remainingQuestionTime)")
@@ -30,7 +30,7 @@ struct GameHeader: View {
 
 #Preview {
     let quiz = QuizModel.mockQuiz()
-    GameService.shared.setGame(with: quiz, timing: .countdown(seconds: 10))
+    GameService.shared.setGame(with: quiz, types: QuestionType.allCases, timing: .countdown(seconds: 10))
     
     return
     GameHeader()

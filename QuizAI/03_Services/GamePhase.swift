@@ -8,7 +8,9 @@
 import SwiftUI
 
 enum GamePhase {
-    case config
-    case playing
+    case idle
+    case ready
+    case asking
+    case answering
     case finished
 }

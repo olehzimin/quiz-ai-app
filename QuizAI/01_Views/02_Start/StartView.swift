@@ -89,7 +89,7 @@ struct StartView: View {
                     
                     Button {
                         dismiss()
-                        gameService.setGame(with: quiz, timing: timing)
+                        gameService.setGame(with: quiz, types: types(), timing: timing)
                         navigationService.path.append(Route.game(quiz: quiz))
                     } label: {
                         Text("Start Quiz")
@@ -156,6 +156,16 @@ extension StartView {
         if seconds == 0 && timerMinutes == 0 {
             timerMinutes = minutesRange[1]
         }
+    }
+    
+    private func types() -> [QuestionType] {
+        var result: [QuestionType] = []
+        
+        if isMultichoiceEnabled { result.append(.multichoice) }
+        if isFlashcardEnabled { result.append(.flashcard) }
+        if isTrueFalseEnabled { result.append(.trueFalse) }
+        
+        return result
     }
 }
 

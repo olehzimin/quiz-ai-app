@@ -10,18 +10,23 @@ import SwiftUI
 @Observable
 final class GameService {
     static let shared: GameService = GameService()
+    private init() { print("GameService init") }
     
     // MARK: Properties
+    var phase: GamePhase = .idle {
+        didSet {
+            print("Game phase: \(phase)")
+        }
+    }
     var isQuestionAnswered: Bool = false
     
     private(set) var quiz: QuizModel? = nil
+    private(set) var types: [QuestionType] = []
     private(set) var timing: GameTiming = .unlimited
     private(set) var currentQuestionIndex: Int = 0
     
     private let timerService = TimerService()
-    private var questions: [QuestionModel] = []
-    
-    private init() { print("GameService init") }
+    private(set) var questions: [QuestionModel] = []
     
     var currentQuestion: QuestionModel? {
         if currentQuestionIndex < questions.count {
@@ -66,14 +71,16 @@ final class GameService {
         
     }
     
-    func setGame(with quiz: QuizModel, timing: GameTiming) {
+    func setGame(with quiz: QuizModel, types: [QuestionType], timing: GameTiming) {
         self.quiz = quiz
+        self.types = types
         self.timing = timing
         
         self.currentQuestionIndex = 0
         self.isQuestionAnswered = false
         
-        var questions: [QuestionModel] = quiz.questions.shuffled()
+        var questions: [QuestionModel] = quiz.questions.filter { types.contains($0.type) }
+        questions.shuffle()
         for (index, var question) in questions.enumerated() {
             question = shuffledOptions(question: question)
             questions[index] = question
@@ -83,7 +90,8 @@ final class GameService {
         if case .countdown(let seconds) = timing {
             timerService.setTimer(time: seconds)
         }
-        print("setGame called")
+        
+        phase = .ready
     }
     
     func startGame() throws {
@@ -93,7 +101,10 @@ final class GameService {
     }
     
     func finishGame() {
-        self.quiz?.resetQuestions(with: questions)
+        let unusedQuestions = quiz?.questions.filter { !types.contains($0.type) } ?? []
+        let updatedQuestions: [QuestionModel] = unusedQuestions + self.questions
+        
+        self.quiz?.resetQuestions(with: updatedQuestions)
         
         print("game finished")
     }
